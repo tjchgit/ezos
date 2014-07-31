@@ -471,7 +471,6 @@ function W($name, $data=array(), $return=false){
     }else{
         kernel::halt("没有找到类定义文件：".$class);
     }
-    
 }
 
 /**

@@ -20,7 +20,7 @@ if(!IS_CLI) {
     }
     if(!defined('ROOT_PATH')) {
         $_root  =   rtrim(dirname(_PHP_FILE_),'/');
-        define('ROOT_PATH',  ( ($_root=='/' || $_root=='\\') ? '/' : $_root ).'/');
+        define('ROOT_PATH',  ( ($_root=='/' || $_root=='\\') ? '' : $_root ).'/');
     }
 }
 defined('APP_DEBUG')    or define('APP_DEBUG',  false);
@@ -30,17 +30,12 @@ defined('CONF_DIR')     or define('CONF_DIR',   ROOT_DIR.'conf/');
 defined('TEMP_DIR')     or define('TEMP_DIR',   ROOT_DIR.'temp/');
 defined('BASE_DIR')     or define('BASE_DIR',   APP_DIR.'base/');
 defined('BASE_PATH')    or define('BASE_PATH',  APP_PATH.'base/');
-
-
 defined('LIB_DIR')      or define('LIB_DIR',    BASE_DIR.'lib/');
 defined('LIB_PATH')     or define('LIB_PATH',   BASE_PATH.'lib/');
-
 defined('CORE_DIR')     or define('CORE_DIR',   LIB_DIR.'core/');
 defined('CORE_PATH')    or define('CORE_PATH',  LIB_PATH.'core/');
-
 defined('COMMON_DIR')   or define('COMMON_DIR', BASE_DIR.'common/');
 defined('COMMON_PATH')  or define('COMMON_PATH',BASE_PATH.'common/');
-
 defined('LOG_DIR')      or define('LOG_DIR',    TEMP_DIR.'log/');
 defined('DATA_DIR')     or define('DATA_DIR',   TEMP_DIR.'data/');
 defined('COMP_DIR')     or define('COMP_DIR',   TEMP_DIR.'comp/');
@@ -63,18 +58,10 @@ class kernel {
 
     static public function buildApp() {
         include COMMON_DIR.'function.php';
-
         C(include BASE_DIR.'conf/config.php');
         C('extends', include BASE_DIR.'conf/hooks.php');
         $hook = CONF_DIR.'hooks.php';
         if(file_exists($hook)) C('hooks', include $hook);
-
-        // 自动加载配置文件
-        //$conf = file_list(CONF_DIR, '/\.conf\.php$/i');
-        // foreach($conf as $file) {
-        //     C(include $file);
-        // }
-        // 加载全局配置文件
         $conf   = CONF_DIR.'config.php';
         if(file_exists($conf)) C( include $conf );
     }
@@ -172,7 +159,7 @@ class kernel {
             $error['line']  =   $e->getLine();
         }
         $error['trace']     =   $e->getTraceAsString();
-        log::record($error['message'],log::ERR);
+        log::record($error['message'], log::ERR);
         // 发送404信息
         header('HTTP/1.1 404 Not Found');
         header('Status:404 Not Found');
@@ -248,24 +235,19 @@ class kernel {
             if(IS_CLI){
                 exit($e['message'].PHP_EOL.'FILE: '.$e['file'].'('.$e['line'].')'.PHP_EOL.$e['trace']);
             }
-        }else{
-            $error_page         = C('ERROR_PAGE');
-            if (!empty($error_page)) {
-                redirect($error_page);
-            } else {
-                if (C('SHOW_ERROR_MSG'))
-                    $e['message'] = is_array($error) ? $error['message'] : $error;
-                else
-                    $e['message'] = C('ERROR_MESSAGE');
+            if(!C('TEMP_EXCEPTION_FILE')){
+                exit('<b>Error:</b>'.$e['message'].' in <b> '.$e['file'].' </b> on line <b>'.$e['line'].'</b>');
             }
+            include C('TEMP_EXCEPTION_FILE');
+        }else{
+            if (C('SHOW_ERROR_MSG')){
+                $e['message'] = is_array($error) ? $error['message'] : $error;
+            }else{
+                $e['message'] = C('ERROR_MESSAGE');
+            }
+            send_http_status(503);
         }
-
-        $TEMP_EXCEPTION_FILE = C('TEMP_EXCEPTION_FILE');
-        if(!$TEMP_EXCEPTION_FILE) {
-            exit('<b>Error:</b>'.$e['message'].' in <b> '.$e['file'].' </b> on line <b>'.$e['line'].'</b>');
-        }
-        include $TEMP_EXCEPTION_FILE;
-        exit;
+        die();
     }
 
     /**

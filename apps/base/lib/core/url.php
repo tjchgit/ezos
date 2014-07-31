@@ -1,12 +1,39 @@
 <?php
 class url {
     static public function run(){
+
+        // 子域名部署实现
+        if(C('SUB_DOMAIN_DEPLOY')){
+            $rules      = C('SUB_DOMAIN_RULES');
+            if(isset($rules[$_SERVER['HTTP_HOST']])) {
+                $rule = $rules[$_SERVER['HTTP_HOST']];
+            }else{
+                $subDomain  = strtolower(substr($_SERVER['HTTP_HOST'],0,strpos($_SERVER['HTTP_HOST'],'.')));
+                if($subDomain && isset($rules[$subDomain])) {
+                    $rule =  $rules[$subDomain];
+                }else if(isset($rules['*'])){
+                    if('www' != $subDomain) $rule =  $rules['*'];
+                }else{
+                    $rule = array();
+                }
+            }
+            if(!empty($rule)) {
+                $array  = explode('/',$rule);
+                $group = array_shift($array);
+                if(!empty($group)) {
+                    $_GET[C('VAR_GROUP')]  =   $group;
+                }
+                if(!empty($array)) {
+                    $_GET[C('VAR_MODULE')]   =   array_shift($array);
+                }
+            }
+        }
         $args = self::formatUrl();
         $var = array();
-        if(!isset($_GET['VAR_GROUP'])) {
+        if(!isset($_GET[C('VAR_GROUP')])) {
             $var[C('VAR_GROUP')] = is_dir(APP_DIR.$args[0]) ? array_shift($args) : C('DEFAULT_GROUP');
         }
-        if(!isset($_GET['VAR_MODULE'])) {
+        if(!isset($_GET[C('VAR_MODULE')])) {
             $var[C('VAR_MODULE')] = array_shift($args);
         }
         $var[C('VAR_ACTION')] = array_shift($args);
@@ -17,7 +44,7 @@ class url {
                 $i += 2;
             }
         }
-        $_GET = array_merge($var, $_GET);
+        $_GET = array_merge($_GET, $var);
         if(C('URL_MODEL') == URL_COMPAT){
             unset($_GET[C('VAR_PATHINFO')]);
         }
@@ -32,8 +59,7 @@ class url {
         defined('__ROOT__') or define("__ROOT__", __HOST__ . ($root=='/' || $root=='\\'?'':$root));
         defined('__WEB__') or define("__WEB__", __HOST__ . $_SERVER['SCRIPT_NAME']);
         defined('__URL__') or define("__URL__", __HOST__ . '/' . trim($_SERVER['REQUEST_URI'],'/'));
-        $history= isset($_SERVER["HTTP_REFERER"])?$_SERVER["HTTP_REFERER"]:null;
-        define("__HISTORY__",$history);
+        define("__HISTORY__", isset($_SERVER["HTTP_REFERER"])?$_SERVER["HTTP_REFERER"]:null);
         define('G_NAME',    self::getName(C('VAR_GROUP'),   C('DEFAULT_GROUP')));
         define('M_NAME',    self::getName(C('VAR_MODULE'),  C('DEFAULT_MODEL')));
         define('A_NAME',    self::getName(C('VAR_ACTION'),  C('DEFAULT_ACTION')));
@@ -62,6 +88,7 @@ class url {
             parse_str($url, $gets);
             $_GET = array_merge($_GET, $gets);
         }
+
         return $gets || empty($url) ? array() : explode(C("URL_PATHINFO_DEPR"), $url);
     }
 
@@ -69,12 +96,16 @@ class url {
         $route = C("ROUTE");
         if (!$route || !is_array($route)) return $query;
         foreach ($route as $k => $v) {
-            if (preg_match("@^/.*/[isUx]*$@i", $k)) {       // 正则路由
-                if (preg_match($k, $query)) {               // 如果匹配URL地址
-                    $v = str_replace('#', '\\', $v);        // 元子组替换
-                    return preg_replace($k, $v, $query);    // 匹配当前正则路由,url按正则替换
+            if (substr($k, 0, 1) === '/') {
+                if (preg_match("@^/.*/[isUx]*$@i", $k)) {       // 正则路由
+                    if (preg_match($k, $query)) {               // 如果匹配URL地址
+                        $v = str_replace('#', '\\', $v);        // 元子组替换
+                        return preg_replace($k, $v, $query);    // 匹配当前正则路由,url按正则替换
+                    }
+                    continue;
                 }
-                continue;
+            }else{
+                if($k == $query) return $v ;
             }
         }
         return $query;
@@ -111,6 +142,8 @@ class url {
                     }
                     return trim($url, '/');
                 }
+            }else{
+                $url = str_replace($v, $k, $url);
             }
         }
         return trim($url, '/');

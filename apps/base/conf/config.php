@@ -92,7 +92,7 @@ return array(
     'DATA_CACHE_PREFIX'         => '',                      // 缓存前缀
     'DATA_CACHE_TIME'           => 60*60*24,                // 缓存24小时
     'URL_404_REDIRECT'          => '',                      // 404跳转页面
-    'SHOW_PAGT_TRACE'           => false,                   // 是否开启trace
+    'SHOW_PAGE_TRACE'           => false,                   // 是否开启trace
     'PAGE_TRACE_SAVE'           => true,                    // 是否储存trace
     /*****************************************二开配置********************************************/
     'CUSTOM_IS_OPEN'            => false,                   // 是否二次开发
