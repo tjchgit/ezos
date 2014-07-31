@@ -10,9 +10,11 @@
 <h4>全面的WEB开发特性支持</h4>
 <ol>
     <li>MVC支持 - 基于多层模型(M)，视图(V)，控制器(C)的设计模式</li>
-    <li>ORM支持 - 使用Thinkphp数据库操作方式目前紧支持Mysql和Mysqli</li>
+    <li>ORM支持 - 使用Thinkphp数据库操作方式目前进支持Mysql和Mysqli</li>
     <li>模版引擎 - 采用知名的Smarty模板引擎，减小学习成本，保证性能</li>
     <li>缓存支持 - 提供了包括文件 数据库 Memcache Redis 等多种类型的缓存支持</li>
+    <li>模块化 - 开发采用模块化方式，减小之间依赖。</li>
+    <li>子域名部署 - 支持单项目子域名部署。</li>
 </ol>
 <h4>安全性</h4>
 <ol>
