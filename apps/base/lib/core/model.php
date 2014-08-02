@@ -48,7 +48,7 @@ class model {
                 $this->name   =  $name;
             }
         }elseif(empty($this->name)){
-            $this->name =   $this->getModelName();
+            // $this->name =   $this->getModelName();
         }
 
         // 设置表前缀

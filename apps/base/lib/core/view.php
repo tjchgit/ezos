@@ -106,8 +106,8 @@ class view {
         $depr       =   C('TMPL_FILE_DEPR');
         $template   =   str_replace(':', $depr, $template);
         $theme  =   $this->getTemplateTheme();                                      // 当前主题名称
-        define('THEME_DIR', APP_DIR.$group.'/'.C('VAR_VIEW_LAYER').'/'.$theme);     // 当前主题的模版路径
-        define('THEME_PATH',   APP_PATH.$group.'/'.C('VAR_VIEW_LAYER').'/'.$theme); // 获取相对路径
+        define('THEME_DIR', APP_DIR.$group.'/'.C('DEFAULT_VIEW_LAYER').'/'.$theme);     // 当前主题的模版路径
+        define('THEME_PATH',   APP_PATH.$group.'/'.C('DEFAULT_VIEW_LAYER').'/'.$theme); // 获取相对路径
 
         if('' == $template) {                                                       // 分析模板文件规则
             $template = M_NAME . $depr . A_NAME;

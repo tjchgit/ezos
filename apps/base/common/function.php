@@ -57,6 +57,31 @@ function C($name=null, $value=null) {
 }
 
 /**
+ * D函数用于实例化Model 格式 项目://分组/模块
+ * @param string $name Model资源地址
+ * @param string $layer 业务层名称
+ * @return Model
+ */
+function D($name, $layer=''){
+    if(empty($name)) return new Model;
+    static $_model  =   array();
+    $layer          =   $layer ? $layer : C('DEFAULT_MODEL_LAYER');
+    if(strpos($name,'/')){
+        list($group,$model) = explode('/', $name);
+    }else{
+        $group = G_NAME;
+        $model = $name;
+    }
+    $className = $group."_mdl_".$model;
+    if(isset($_model[$className]))   return $_model[$className];
+    if(class_exists($className)){
+        $class = new $className();
+    }
+    $_model[$className] = $class;
+    return $class;
+}
+
+/**
  * 抛出异常处理
  * @param string $msg 异常消息
  * @param integer $code 异常代码 默认为0
