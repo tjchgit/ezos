@@ -82,16 +82,16 @@ class kernel {
             $path       = str_replace('_','/',substr($className,4)).'.php';
             switch($tick) {
                 case 'ctl_':
-                    $fileName = $owner."/controller/".$path;
+                    $fileName = $owner."/".C('DEFAULT_CONTROLLER_LAYER')."/".$path;
                 break;
                 case 'mdl_':
-                    $fileName = $owner."/model/".$path;
+                    $fileName = $owner."/".C('DEFAULT_MODEL_LAYER')."/".$path;
                 break;
                 case 'hok_':
-                    $fileName = $owner."/hooks/".$path;
+                    $fileName = $owner."/".C('DEFAULT_HOOKS_LAYER')."/".$path;
                 break;
                 case 'wid_':
-                    $fileName = $owner."/widget/".$path;
+                    $fileName = $owner."/".C('DEFAULT_WIDGET_LAYER')."/".$path;
                 break;
                 default :
                     $fileName = $owner."/lib/".str_replace('_','/',$className).'.php';

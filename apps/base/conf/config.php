@@ -18,6 +18,11 @@ return array(
     'DEFAULT_CHARSET'           => 'utf-8',                 // 默认字符集
     'DEFAULT_THEME'             => '',                      // 默认主题
     'DEFAULT_FILTER'            => 'htmlspecialchars',      // 参数默认过滤
+    'DEFAULT_VIEW_LAYER'        => 'view',
+    'DEFAULT_MODEL_LAYER'       => 'model',
+    'DEFAULT_CONTROLLER_LAYER'  => 'controller',
+    'DEFAULT_HOOKS_LAYER'       => 'hooks',
+    'DEFAULT_WIDGET_LAYER'      => 'widget',
     /*****************************************模版配置********************************************/
     'THEME_LIST'                => array(),                 // 主题目录
     'TMPL_FILE_DEPR'            => '_',                     // 模版间隔
@@ -40,9 +45,9 @@ return array(
     'VAR_ACTION'                => 'a',                     // 操作变量
     'VAR_AJAX_SUBMIT'           => 'ajax',                  // 默认的AJAX提交变量
     'VAR_FILTERS'               => 'filter_exp',            // 全局过滤方法 用逗号分割
-    'VAR_MODEL_LAYER'           => 'model',                 // MODEL目录名称
-    'VAR_VIEW_LAYER'            => 'view',                  // 模版目录名称
-    'VAR_CONTROLLER_LAYER'      => 'controller',            // 控制器目录名称
+    //'VAR_MODEL_LAYER'           => 'model',                 // MODEL目录名称
+    //'VAR_VIEW_LAYER'            => 'view',                  // 模版目录名称
+    //'VAR_CONTROLLER_LAYER'      => 'controller',            // 控制器目录名称
     /*****************************************会话控制********************************************/
     'COOKIE_PREFIX'             => 'cent_',                 // cookie 名称前缀
     'COOKIE_EXPIRE'             => 3600*24*365*10,          // cookie 保存时间
