@@ -44,10 +44,6 @@ class base_driver_cache_db extends cache {
                 }
             }
             $content   =  $result['data'];
-            if(C('DATA_CACHE_COMPRESS') && function_exists('gzcompress')) {
-                //启用数据压缩
-                $content   =   gzuncompress($content);
-            }
             $content    =   unserialize($content);
             return $content;
         }
