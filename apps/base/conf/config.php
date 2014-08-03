@@ -45,9 +45,6 @@ return array(
     'VAR_ACTION'                => 'a',                     // 操作变量
     'VAR_AJAX_SUBMIT'           => 'ajax',                  // 默认的AJAX提交变量
     'VAR_FILTERS'               => 'filter_exp',            // 全局过滤方法 用逗号分割
-    //'VAR_MODEL_LAYER'           => 'model',                 // MODEL目录名称
-    //'VAR_VIEW_LAYER'            => 'view',                  // 模版目录名称
-    //'VAR_CONTROLLER_LAYER'      => 'controller',            // 控制器目录名称
     /*****************************************会话控制********************************************/
     'COOKIE_PREFIX'             => 'cent_',                 // cookie 名称前缀
     'COOKIE_EXPIRE'             => 3600*24*365*10,          // cookie 保存时间
@@ -96,6 +93,9 @@ return array(
     'DATA_CACHE_PATH'           => CACHE_DIR,               // 缓存目录
     'DATA_CACHE_PREFIX'         => '',                      // 缓存前缀
     'DATA_CACHE_TIME'           => 60*60*24,                // 缓存24小时
+    'DATA_CACHE_TABLE'          => 'wx_cache',              // 缓存数据库表名
+    'DATA_CACHE_CHECK'          => true,                    // 缓存数据校验
+    /*****************************************调试配置*******************************************/
     'URL_404_REDIRECT'          => '',                      // 404跳转页面
     'SHOW_PAGE_TRACE'           => false,                   // 是否开启trace
     'PAGE_TRACE_SAVE'           => true,                    // 是否储存trace
