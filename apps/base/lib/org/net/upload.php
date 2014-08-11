@@ -14,7 +14,7 @@ class upload {//类定义开始
         'thumbSuffix'       =>  '',
         'thumbPath'         =>  '',// 缩略图保存路径
         'thumbFile'         =>  '',// 缩略图文件名
-        'thumbExt'          =>  '',// 缩略图扩展名        
+        'thumbExt'          =>  '',// 缩略图扩展名
         'thumbRemoveOrigin' =>  false,// 是否移除原图
         'thumbType'         =>  1, // 缩略图生成方式 1 按设置大小截取 0 按原图等比例缩略
         'zipImages'         =>  false,// 压缩图片文件上传
@@ -51,7 +51,7 @@ class upload {//类定义开始
     public function __isset($name){
         return isset($this->config[$name]);
     }
-    
+
     /**
      * 架构函数
      * @access public
@@ -82,7 +82,7 @@ class upload {//类定义开始
             $info   = getimagesize($file['tmp_name']);
             if(false === $info || ('gif' == strtolower($file['extension']) && empty($info['bits']))){
                 $this->error = '非法图像文件';
-                return false;                
+                return false;
             }
         }
         if(!move_uploaded_file($file['tmp_name'], $this->autoCharset($filename,'utf-8','gbk'))) {
@@ -113,9 +113,9 @@ class upload {//类定义开始
                     if(1 == $this->thumbType){
                         Image::thumb2($filename,$thumbPath.$thumbname.'.'.$thumbExt,'',$thumbWidth[$i],$thumbHeight[$i],true);
                     }else{
-                        Image::thumb($filename,$thumbPath.$thumbname.'.'.$thumbExt,'',$thumbWidth[$i],$thumbHeight[$i],true);                        
+                        Image::thumb($filename,$thumbPath.$thumbname.'.'.$thumbExt,'',$thumbWidth[$i],$thumbHeight[$i],true);
                     }
-                    
+
                 }
                 if($this->thumbRemoveOrigin) {
                     // 生成缩略图之后删除原图
@@ -147,7 +147,7 @@ class upload {//类定义开始
                 $savePath   =   base64_decode($savePath);
             }else{
                 // 尝试创建目录
-                if(!mkdir($savePath, 777, true)){
+                if(!mkdir($savePath, 0777, true)){
                     $this->error  =  '上传目录'.$savePath.'不存在';
                     return false;
                 }
