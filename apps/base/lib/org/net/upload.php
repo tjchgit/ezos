@@ -28,7 +28,7 @@ class upload {//类定义开始
         'uploadReplace'     =>  false,// 存在同名是否覆盖
         'saveRule'          =>  'uniqid',// 上传文件命名规则
         'hashType'          =>  'md5_file',// 上传文件Hash规则函数名
-        );
+    );
 
     // 错误信息
     private $error = '';
