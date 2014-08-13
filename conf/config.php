@@ -15,8 +15,8 @@ return array(
     'DB_TYPE'               =>  'mysql',            // 数据库类型
     'DB_HOST'               =>  'localhost',        // 服务器地址
     'DB_NAME'               =>  'weixin',           // 数据库名
-    'DB_USER'               =>  'all',              // 用户名
-    'DB_PWD'                =>  'ckFP8tIL',         // 密码
+    'DB_USER'               =>  'root',             // 用户名
+    'DB_PWD'                =>  'wuyunlong',        // 密码
     'DB_PREFIX'             =>  'wx_',              // 数据库表前缀
 
     'SUB_DOMAIN_DEPLOY'     => 1,
