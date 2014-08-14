@@ -1,2 +1,6 @@
 temp/*
 !temp/.empty
+
+apps/*
+!apps/base
+!apps/demo
