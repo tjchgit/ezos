@@ -29,3 +29,12 @@
     <li>防SQL注入</li>
     <li>图像上传检测</li>
 </ol>
+<h4>如何使用</h4>
+<p>index.php是站点的唯一入口，写入一下内容。</p>
+<pre>
+<code>
+<?php
+include './apps/base/kernel.php';
+kernel::boot();
+</code>
+</pre>
