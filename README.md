@@ -33,7 +33,7 @@
 <p>index.php是站点的唯一入口，写入一下内容。</p>
 <pre>
 <code>
-<?php
+&gt;?php
 include './apps/base/kernel.php';
 kernel::boot();
 </code>
