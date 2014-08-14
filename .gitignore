@@ -4,3 +4,6 @@ temp/*
 apps/*
 !apps/base
 !apps/demo
+
+public/*
+public/.empty
