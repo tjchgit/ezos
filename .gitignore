@@ -1,2 +1,4 @@
-/temp/*
-!/temp/.empty
+/temp/*                 #取消掉temp下生成的所有编译文件
+!/temp/.empty           #保留temp下的.empty文件 保证temp目录在版本控制中
+/public/*               #public是框架静态数据保存文件
+!public/.empty          #保留public下的.empty文件 保证public文件在版本控制中
