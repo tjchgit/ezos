@@ -6,6 +6,9 @@ apps/*
 !apps/demo
 
 public/*
-public/.empty
+!public/.empty
 
 .svn
+
+conf/*
+!conf/.empty
