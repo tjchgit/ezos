@@ -106,4 +106,13 @@ return array(
     /*****************************************文件上传********************************************/
     'FILE_UPLOAD_TYPE'          => 'local',                 // 文件上传
     'UPLOAD_TYPE_CONFIG'        => array(),                 // 文件上传配置
+    /*****************************************权限认证********************************************/
+    'AUTH_CONFIG'               => array(
+        'AUTH_ON'               => true,
+        'AUTH_TYPE'             => 1,
+        'AUTH_GROUP'            => 'wx_auth_group',
+        'AUTH_GROUP_ACCESS'     => 'wx_auth_group_access',
+        'AUTH_RULE'             => 'wx_auth_rule',
+        'AUTH_USER'             => 'wx_web_user',
+    ),
 );

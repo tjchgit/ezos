@@ -358,7 +358,7 @@ function P($var, $echo=true, $label=null, $strict=true) {
     if (!$strict) {
         if (ini_get('html_errors')) {
             $output = print_r($var, true);
-            $output = '<pre>' . $label . htmlspecialchars($output, ENT_QUOTES) . '</pre>';
+            $output = $label . htmlspecialchars($output, ENT_QUOTES);
         } else {
             $output = $label . print_r($var, true);
         }
@@ -368,11 +368,13 @@ function P($var, $echo=true, $label=null, $strict=true) {
         $output = ob_get_clean();
         if (!extension_loaded('xdebug')) {
             $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
-            $output = '<pre>' . $label . htmlspecialchars($output, ENT_QUOTES) . '</pre>';
+            $output = $label . htmlspecialchars($output, ENT_QUOTES);
         }
     }
     if ($echo) {
+        echo '<pre style="font:400 12px/1.5 tahoma,arial,宋体;">';
         echo($output);
+        echo '</pre>';
         return null;
     }else{
         return $output;
