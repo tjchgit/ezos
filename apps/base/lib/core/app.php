@@ -3,19 +3,21 @@ class app {
     static public function init(){
         date_default_timezone_set(C('DEFAULT_TIMEZONE'));
         url::run();
-        $GconfigFile    = G_DIR.'conf/config.php';
-        $GhooksFile     = G_DIR.'conf/hooks.php';
-        $GlangFile      = G_DIR.'lang/'.C('DEFAULT_LANG').'.php';
-        if(is_file($GconfigFile))   C(include $GconfigFile);            // 加载当前分组配置
-        if(is_file($GhooksFile))    C('self', include $GhooksFile);     // 加载当前分组钩子
-        if(is_file($GlangFile))     L(include $GlangFile);              // 加载当前分组语言包
+        $confFile    = G_DIR.'conf/config.php';
+        $hookFile    = G_DIR.'conf/hooks.php';
+        $langFile    = G_DIR.'lang/'.C('DEFAULT_LANG').'.php';
+        $funcFile    = G_DIR.'common/function.php';
+        if(is_file($confFile))      C(include $confFile);            // 加载当前分组配置
+        if(is_file($hookFile))      C('self', include $hookFile);    // 加载当前分组钩子
+        if(is_file($langFile))      L(include $langFile);            // 加载当前分组语言包
+        if(is_file($funcFile))      require_cache($funcFile);        // 加载当前分组函数
         define('NOW_TIME',          $_SERVER['REQUEST_TIME']);
         define('REQUEST_METHOD',    $_SERVER['REQUEST_METHOD']);
-        define('IS_GET',        REQUEST_METHOD =='GET' ? true : false);
-        define('IS_POST',       REQUEST_METHOD =='POST' ? true : false);
-        define('IS_PUT',        REQUEST_METHOD =='PUT' ? true : false);
-        define('IS_DELETE',     REQUEST_METHOD =='DELETE' ? true : false);
-        define('IS_AJAX',       ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || !empty($_POST[C('VAR_AJAX_SUBMIT')]) || !empty($_GET[C('VAR_AJAX_SUBMIT')])) ? true : false);
+        define('IS_GET',            REQUEST_METHOD =='GET' ? true : false);
+        define('IS_POST',           REQUEST_METHOD =='POST' ? true : false);
+        define('IS_PUT',            REQUEST_METHOD =='PUT' ? true : false);
+        define('IS_DELETE',         REQUEST_METHOD =='DELETE' ? true : false);
+        define('IS_AJAX',           ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || !empty($_POST[C('VAR_AJAX_SUBMIT')]) || !empty($_GET[C('VAR_AJAX_SUBMIT')])) ? true : false);
         hook('url_dispatch');
         if(C('VAR_FILTERS')) {
             $filters = explode(',', C('VAR_FILTERS'));
