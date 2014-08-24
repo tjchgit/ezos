@@ -31,7 +31,7 @@ class url {
         $args = self::formatUrl();
         $var = array();
         if(!isset($_GET[C('VAR_GROUP')])) {
-            $var[C('VAR_GROUP')] = is_dir(APP_DIR.$args[0]) ? array_shift($args) : C('DEFAULT_GROUP');
+            $var[C('VAR_GROUP')] = (isset($args[0]) && is_dir(APP_DIR.$args[0])) ? array_shift($args) : C('DEFAULT_GROUP');
         }
         if(!isset($_GET[C('VAR_MODULE')])) {
             $var[C('VAR_MODULE')] = array_shift($args);
