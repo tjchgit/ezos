@@ -108,11 +108,12 @@ return array(
     'UPLOAD_TYPE_CONFIG'        => array(),                 // 文件上传配置
     /*****************************************权限认证********************************************/
     'AUTH_CONFIG'               => array(
-        'AUTH_ON'               => true,
-        'AUTH_TYPE'             => 1,
-        'AUTH_GROUP'            => 'wx_auth_group',
-        'AUTH_GROUP_ACCESS'     => 'wx_auth_group_access',
-        'AUTH_RULE'             => 'wx_auth_rule',
-        'AUTH_USER'             => 'wx_web_user',
+        'AUTH_ON'               => true,                    // 是否开启权限认证
+        'AUTH_TYPE'             => 2,                       // 认证方式，1为实时认证；2为登录认证。
+        'AUTH_GROUP'            => 'auth_group',            // 用户组数据表名
+        'AUTH_GROUP_ACCESS'     => 'auth_group_access',     // 用户-用户组关系表
+        'AUTH_RULE'             => 'auth_rule',             // 权限规则表
+        'AUTH_USER'             => 'web_user',              // 户信息表
+        'AUTO_PREFIX'           => true,                    // 自动前缀
     ),
 );
