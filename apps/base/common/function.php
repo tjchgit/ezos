@@ -1066,3 +1066,13 @@ function array_sort($arr,$keys,$type='asc'){
     }
     return $new_array;
 }
+
+/**
+ * trace控制台输出
+ * @param obj 要输出的对象
+ **/
+function debug($obj){
+    if(C('SHOW_PAGE_TRACE')){
+        kernel::trace($obj);
+    }
+}
