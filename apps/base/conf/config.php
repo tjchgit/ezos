@@ -29,6 +29,8 @@ return array(
     'TMPL_TEMPL_SUFFIX'         => '.htm',                  // 模版后缀
     'TMPL_CACHE_ON'             => false,                   // 模版缓存
     'TMPL_DETECT_THEME'         => true,                    // 开启自动切换主题
+    'TMPL_ENGINE_TYPE'          => 'smarty',                // 默认模版引擎
+    'TMPL_CACHE_PREFIX'         => 'ezos_',                 // 模版缓存前缀
     'TMPL_ENGINE_CONFIG'        => array(                   // 模版配置
         'debugging'             => false,                   // 开启调试模式
         'left_delimiter'        =>'{',                      // 左侧边界符
