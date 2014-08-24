@@ -291,7 +291,7 @@ function I($name,$default='',$filter=null) {
             }
         }
     }else{ // 变量默认值
-        $data       =	 isset($default)?$default:null;
+        $data       =	 isset($default) ? $default : null;
     }
     return $data;
 }
