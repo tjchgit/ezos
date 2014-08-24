@@ -372,7 +372,7 @@ function P($var, $echo=true, $label=null, $strict=true) {
         }
     }
     if ($echo) {
-        echo '<pre style="font:400 12px/1.5 tahoma,arial,宋体;">';
+        echo '<pre style="font:400 12px/1.5 宋体;">';
         echo($output);
         echo '</pre>';
         return null;
