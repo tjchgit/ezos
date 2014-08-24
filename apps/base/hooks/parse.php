@@ -1,8 +1,5 @@
 <?php
 class base_hok_parse extends hook {
-    protected $options = array(
-        'TMPL_ENGINE_TYPE'  => 'smarty',
-    );
     public function run(&$_data) {
         $engine             = strtolower( C('TMPL_ENGINE_TYPE') );
         $_content           = empty($_data['content']) ? $_data['file'] : $_data['contet'];
