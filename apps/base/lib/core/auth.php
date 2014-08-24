@@ -1,23 +1,15 @@
 <?php
 class auth {
-    protected $_config = array(
-        'AUTH_ON'           => true,                // 认证开关
-        'AUTH_TYPE'         => 1,                   // 认证方式，1为实时认证；2为登录认证。
-        'AUTH_GROUP'        => 'auth_group',        // 用户组数据表名
-        'AUTH_GROUP_ACCESS' => 'auth_group_access', // 用户-用户组关系表
-        'AUTH_RULE'         => 'auth_rule',         // 权限规则表
-        'AUTH_USER'         => 'member'             // 用户信息表
-    );
+    protected $_config = array();
 
     public function __construct(){
-        $prefix = C('DB_PREFIX');
-        $this->_config['AUTH_GROUP'] = $prefix.$this->_config['AUTH_GROUP'];
-        $this->_config['AUTH_RULE'] = $prefix.$this->_config['AUTH_RULE'];
-        $this->_config['AUTH_USER'] = $prefix.$this->_config['AUTH_USER'];
-        $this->_config['AUTH_GROUP_ACCESS'] = $prefix.$this->_config['AUTH_GROUP_ACCESS'];
-        if (C('AUTH_CONFIG')) {
-            //可设置配置项 AUTH_CONFIG, 此配置项为数组。
-            $this->_config = array_merge($this->_config, C('AUTH_CONFIG'));
+        $this->_config = C('AUTH_CONFIG');
+        if($this->_config['AUTO_PREFIX']){
+            $prefix = C('DB_PREFIX');
+            $arr = array('AUTH_GROUP', 'AUTH_RULE', 'AUTH_USER', 'AUTH_GROUP_ACCESS');
+            foreach($arr as $val){
+                $this->_config[$val] = $prefix.$this->_config[$val];
+            }
         }
     }
 
@@ -34,7 +26,6 @@ class auth {
             return true;
         }
         $authList = $this->getAuthList($uid,$type);
-        P($authList);
         if(is_string($name)){
             $name = strtolower($name);
             if(strpos($name, ',')){
