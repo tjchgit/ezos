@@ -10,3 +10,8 @@ function is_login(){
 function demo($o){
     return $o/5;
 }
+
+function userMakeFunc(String $data){
+    list($val1, $val2) = array_values($data);
+    return $val1 != $val2;
+}

@@ -2,13 +2,16 @@
 class demo_ctl_model extends controller{
     public function run(){
         $model = D('member');
-        $users = $model->memberInfo();
+        $users = $model->getAllUser();
         P($users);
     }
+
     public function demo(){
-        $_POST['username'] = '123456789';
-        $_POST['password'] = '1234555557';
         $model = D('member');
-        $model->addOneUser();
+        $_POST['username'] = '123';
+        $_POST['password'] = '444';
+        $_POST['rpassword'] = '444';
+        $_POST['dpassword'] = '4445';
+        $model->insertOneUser();
     }
 }
