@@ -463,12 +463,11 @@ function U($url='',$vars='',$suffix=true) {
             }
         }
     }
-    if(isset($anchor)){
-        $url  .= '#'.$anchor;
-    }
     $domain = preg_replace('/\w+?\.php(\/|\?)?/i', '', __WEB__);
     $suffix = $suffix===true ? '.'.ltrim(C('URL_HTML_SUFFIX'), '.') : '' ;
-    return $domain.url::tourl($url).$suffix;
+    $url = url::tourl($url).$suffix;
+    if(isset($anchor)) $url .= '#'.$anchor;
+    return $domain.$url;
 }
 
 /**
@@ -1074,5 +1073,18 @@ function array_sort($arr,$keys,$type='asc'){
 function debug($obj){
     if(C('SHOW_PAGE_TRACE')){
         kernel::trace($obj);
+    }
+    if(C('FIRE_BUG_ON')){
+        fb($obj);
+    }
+}
+
+function fb(){
+    if(C('FIRE_BUG_ON')){
+        $instance = firephp::getInstance(true);
+        $args = func_get_args();
+        return call_user_func_array(array($instance,'fb'),$args);
+    }else{
+        return true;
     }
 }
