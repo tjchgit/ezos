@@ -125,7 +125,10 @@ class url {
         if(!$route) return $url ;
         foreach ($route as $k => $v) {
             $k = trim($k);
-            if (substr($k, 0, 1) === '/') {      //正则路由
+            if (substr($k, 0, 1) !== '/') {     // 静态路由 
+                $url = preg_replace('@^'.$v.'$@i', $k, $url);
+                return trim($url, '/');
+            }else{                              // 正则路由
                 $regGroup = array();
                 preg_match_all("@\(.*?\)@i", $k, $regGroup, PREG_PATTERN_ORDER);
                 $searchRegExp = $v;
@@ -142,8 +145,6 @@ class url {
                     }
                     return trim($url, '/');
                 }
-            }else{
-                $url = str_replace($v, $k, $url);
             }
         }
         return trim($url, '/');
