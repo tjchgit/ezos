@@ -122,12 +122,27 @@ class url {
 
     static public function tourl($url){
         $route = C("ROUTE");
+        fb($route);
+        fb($route);
+        fb($route);
+        fb($route);
+        fb($route);
+        fb($route);
+        fb($route);
+        fb($route);
         if(!$route) return $url ;
+        static $_route = array();
+        $oldUrl = $url;
+        if(isset($_route[$oldUrl])) return $_route[$oldUrl];
+        $_route[$oldUrl] = $url;
         foreach ($route as $k => $v) {
             $k = trim($k);
-            if (substr($k, 0, 1) !== '/') {     // 静态路由 
+            if (substr($k, 0, 1) !== '/') {     // 静态路由
                 $url = preg_replace('@^'.$v.'$@i', $k, $url);
-                return trim($url, '/');
+                if($_route[$oldUrl] !== $url){
+                    $_route[$oldUrl] = trim($url, '/');
+                    return $_route[$oldUrl];
+                }   
             }else{                              // 正则路由
                 $regGroup = array();
                 preg_match_all("@\(.*?\)@i", $k, $regGroup, PREG_PATTERN_ORDER);
@@ -143,10 +158,14 @@ class url {
                         $val = preg_replace('@([\*\$\(\)\+\?\[\]\{\}\\\])@', '\\\$1', $val);
                         $url = preg_replace('@' . $val . '@', $urlArgs[0][$key + 1], $url, $count = 1);
                     }
-                    return trim($url, '/');
+                }
+                if($_route[$oldUrl] !== $url){
+                    $_route[$oldUrl] = trim($url, '/');
+                    return $_route[$oldUrl];
                 }
             }
         }
-        return trim($url, '/');
+        $_route[$oldUrl] = trim($url, '/');
+        return $_route[$oldUrl];
     }
 }
