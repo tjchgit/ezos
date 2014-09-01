@@ -465,7 +465,7 @@ function U($url='',$vars='',$suffix=true) {
     }
     $domain = preg_replace('/\w+?\.php(\/|\?)?/i', '', __WEB__);
     $suffix = $suffix===true ? '.'.ltrim(C('URL_HTML_SUFFIX'), '.') : '' ;
-    $url = url::tourl($url).$suffix;
+    if($url = url::tourl($url)) $url .= $suffix;
     if(isset($anchor)) $url .= '#'.$anchor;
     return $domain.$url;
 }
