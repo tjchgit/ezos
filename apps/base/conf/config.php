@@ -12,8 +12,8 @@ return array(
     /*****************************************默认配置********************************************/
     'DEFAULT_TIMEZONE'          => 'PRC',                   // 默认时区
     'DEFAULT_LANG'              => 'zh-cn',                 // 默认语言
-    'DEFAULT_GROUP'             => 'home',                  // 默认分组
-    'DEFAULT_MODEL'             => 'index',                 // 默认操作
+    'DEFAULT_MODULE'            => 'home',                  // 默认分组
+    'DEFAULT_CONTROLLER'        => 'index',                 // 默认操作
     'DEFAULT_ACTION'            => 'run',                   // 默认方法
     'DEFAULT_CHARSET'           => 'utf-8',                 // 默认字符集
     'DEFAULT_THEME'             => '',                      // 默认主题
@@ -42,8 +42,8 @@ return array(
     /*****************************************URL变量********************************************/
     'VAR_TEMPLATE'              => 't',                     // 模版切换变量
     'VAR_PATHINFO'              => 'r',                     // 兼容模式PATHINFO获取变量
-    'VAR_GROUP'                 => 'g',                     // 分组变量
-    'VAR_MODULE'                => 'm',                     // 模型变量
+    'VAR_MODULE'                => 'm',                     // 分组变量
+    'VAR_CONTROLLER'            => 'c',                     // 模型变量
     'VAR_ACTION'                => 'a',                     // 操作变量
     'VAR_AJAX_SUBMIT'           => 'ajax',                  // 默认的AJAX提交变量
     'VAR_FILTERS'               => 'filter_exp',            // 全局过滤方法 用逗号分割
