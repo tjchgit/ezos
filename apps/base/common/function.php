@@ -9,7 +9,7 @@ function A($name) {
     if(strpos($name, '/')) {
         list($group, $name) = explode('/', $name);
     }else{
-        $group  = G_NAME ;
+        $group  = M_NAME ;
         $name   = $name ;
     }
     $class = $group.'_ctl_'.$name;
@@ -69,7 +69,7 @@ function D($name, $layer=''){
     if(strpos($name,'/')){
         list($group,$model) = explode('/', $name);
     }else{
-        $group = G_NAME;
+        $group = M_NAME;
         $model = $name;
     }
     $className = $group."_mdl_".$model;
@@ -390,6 +390,7 @@ function P($var, $echo=true, $label=null, $strict=true) {
  * @return string
  */
 function U($url='',$vars='',$suffix=true) {
+    $urlModel = C('URL_MODEL');
     // 解析URL
     $info   =  parse_url($url);
     $url    =  !empty($info['path']) ? $info['path'] : ACTION_NAME ;
@@ -433,19 +434,19 @@ function U($url='',$vars='',$suffix=true) {
             $path       =   explode($depr,$url);
             $var        =   array();
             $var[C('VAR_ACTION')]       =   !empty($path) ? array_pop($path) : A_NAME;
-            $var[C('VAR_MODULE')]       =   !empty($path) ? array_pop($path) : M_NAME;
+            $var[C('VAR_CONTROLLER')]   =   !empty($path) ? array_pop($path) : M_NAME;
             if(!empty($path)) {
                 $group                  =   array_pop($path);
-                $var[C('VAR_GROUP')]    =   $group;
+                $var[C('VAR_MODULE')]    =   $group;
             }else{
-                if(G_NAME != C('DEFAULT_GROUP')) {
-                    $var[C('VAR_GROUP')]=   G_NAME;
+                if(M_NAME != C('DEFAULT_MODULE')) {
+                    $var[C('VAR_MODULE')]=   M_NAME;
                 }
             }
         }
     }
 
-    if(C('URL_MODEL') == 0) { // 普通模式URL转换
+    if($urlModel == URL_COMMON) { // 普通模式URL转换
         $url        =   http_build_query(array_reverse($var));
         if(!empty($vars)) {
             $vars   =   urldecode(http_build_query($vars));
@@ -464,10 +465,17 @@ function U($url='',$vars='',$suffix=true) {
         }
     }
     $domain = preg_replace('/\w+?\.php(\/|\?)?/i', '', __WEB__);
+    if($urlModel == URL_PATHINFO){
+        $url = __WEB__.'/'.$url;
+    }elseif($urlModel == URL_REWRITE){
+        $url = $domain.url::tourl($url);
+    }elseif($urlModel == URL_COMPAT){
+        $url = __WEB__.'?'.C('VAR_PATHINFO').'='.$url;
+    }
     $suffix = $suffix===true ? '.'.ltrim(C('URL_HTML_SUFFIX'), '.') : '' ;
-    if($url = url::tourl($url)) $url .= $suffix;
+    if($url) $url .= $suffix;
     if(isset($anchor)) $url .= '#'.$anchor;
-    return $domain.$url;
+    return $url;
 }
 
 /**
@@ -482,7 +490,7 @@ function W($name, $data=array(), $return=false){
     if(strpos($name, '/')){
         list($group, $name) = explode('/', $name);
     }else{
-        $group  = G_NAME;
+        $group  = M_NAME;
         $name   = $name;
     }
     $class = $group.'_wid_'.$name;
@@ -778,7 +786,7 @@ function import($class, $baseUrl='', $ext ='.php') {
     $class_strut = explode('/', $class);
     if(empty($baseUrl)) {
         if('@' == $class_strut[0]) {
-            $baseUrl = APP_DIR.G_NAME.'/';
+            $baseUrl = APP_DIR.M_NAME.'/';
             unset($class_strut[0]);
             $class = implode('/', $class_strut);
         }elseif(in_array($class_strut[0], array('net', 'crypt', 'util'))) {
