@@ -30,21 +30,21 @@ class base_ctl_install extends controller{
         die();
     }
     public function writeIndexControler(){
-        $controllerStr = file_get_contents(G_DIR.'view/indexController.php');
+        $controllerStr = file_get_contents(M_DIR.'view/indexController.php');
         $fileName = APP_DIR.'home/controller/index.php';
         if(!is_file($fileName))
             file_put_contents($fileName, $controllerStr);
         return true;
     }
     public function writeIndexView(){
-        $viewStr = file_get_contents(G_DIR.'view/indexView.php');
+        $viewStr = file_get_contents(M_DIR.'view/indexView.php');
         $fileName = APP_DIR.'home/view/index_run.htm';
         if(!is_file($fileName))
             file_put_contents($fileName, $viewStr);
         return true;
     }
     public function writeIndexConf(){
-        $confStr = file_get_contents(G_DIR.'view/indexConf.php');
+        $confStr = file_get_contents(M_DIR.'view/indexConf.php');
         $fileName = APP_DIR.'home/conf/config.php';
         if(!is_file($fileName))
             file_put_contents($fileName, $viewStr);

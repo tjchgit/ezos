@@ -19,7 +19,7 @@ class base_hok_replace extends hook {
             '__TMPL__'      => THEME_PATH,              // 项目模板目录
             '../public'     => THEME_PATH.'public',     // 项目公共模板目录
             '__PUBLIC__'    => ROOT_PATH.'public',      // 站点公共目录
-            '__STATIC__'    => G_PATH.'static',          // 分组静态文件
+            '__STATIC__'    => M_PATH.'static',          // 分组静态文件
         );
         // 允许用户自定义模板的字符串替换
         if(is_array(C('TMPL_PARSE_STRING')) )

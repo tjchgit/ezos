@@ -3,14 +3,14 @@ class app {
     static public function init(){
         date_default_timezone_set(C('DEFAULT_TIMEZONE'));
         url::run();
-        $confFile    = G_DIR.'conf/config.php';
-        $hookFile    = G_DIR.'conf/hooks.php';
-        $langFile    = G_DIR.'lang/'.C('DEFAULT_LANG').'.php';
-        $funcFile    = G_DIR.'common/function.php';
+        $confFile    = M_DIR.'conf/config.php';
+        $hookFile    = M_DIR.'conf/hooks.php';
+        $langFile    = M_DIR.'lang/'.C('DEFAULT_LANG').'.php';
+        $funcFile    = M_DIR.'common/function.php';
         if(is_file($confFile))      C(include $confFile);            // 加载当前分组配置
         if(is_file($hookFile))      C('self', include $hookFile);    // 加载当前分组钩子
         if(is_file($langFile))      L(include $langFile);            // 加载当前分组语言包
-        if(G_NAME != 'base'){
+        if(M_NAME != 'base'){
             if(is_file($funcFile))      require_cache($funcFile);    // 加载当前分组函数
         }
         define('NOW_TIME',          $_SERVER['REQUEST_TIME']);
@@ -31,15 +31,15 @@ class app {
         return;
     }
     static public function exec() {
-        if(!preg_match('/^[A-Za-z](\w)*$/', M_NAME)) {
+        if(!preg_match('/^[A-Za-z](\w)*$/', C_NAME)) {
             $module = false ;
         }else{
-            $module = A(M_NAME);
+            $module = A(C_NAME);
         }
 
         if(!$module) {
             $module = A('empty');
-            if(!$module){ _404("无法加载模块：".M_NAME);}
+            if(!$module){ _404("无法加载模块：".C_NAME);}
         }
 
         $action = A_NAME;

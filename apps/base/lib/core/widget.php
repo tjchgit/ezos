@@ -18,7 +18,7 @@ abstract class widget{
             $templatePath   = APP_DIR.$groupName.'/widget/';
             $templateFile   = $name[1].C('TMPL_TEMPL_SUFFIX');
         }else{
-            $groupName      = G_NAME;
+            $groupName      = M_NAME;
             $templatePath   = '';
         }
         $template   =  strtolower( $this->template ? $this->template :( C('TMPL_ENGINE_TYPE') ? C('TMPL_ENGINE_TYPE') : 'php'));

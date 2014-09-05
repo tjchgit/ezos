@@ -101,7 +101,7 @@ class view {
         if(strpos($template, '@')) {
             list($group, $template) = explode('@', $template);
         }else{
-            $group = G_NAME;
+            $group = M_NAME;
         }
         $depr       =   C('TMPL_FILE_DEPR');
         $template   =   str_replace(':', $depr, $template);
@@ -110,9 +110,9 @@ class view {
         define('THEME_PATH',   APP_PATH.$group.'/'.C('DEFAULT_VIEW_LAYER').'/'.$theme); // 获取相对路径
 
         if('' == $template) {                                                       // 分析模板文件规则
-            $template = M_NAME . $depr . A_NAME;
+            $template = C_NAME . $depr . A_NAME;
         }elseif(false === strpos($template, '/')){
-            $template = M_NAME . $depr . $template;
+            $template = C_NAME . $depr . $template;
         }
         return THEME_DIR.$template.C('TMPL_TEMPL_SUFFIX');
     }

@@ -6,8 +6,8 @@ class base_driver_tpl_smarty {
         $tpl = new Smarty();
         $tpl->caching       = C('TMPL_CACHE_ON');
         $tpl->template_dir  = THEME_DIR;
-        $tpl->compile_dir   = COMP_DIR.G_NAME.'/';
-        $tpl->cache_dir     = CACHE_DIR.G_NAME.'/';
+        $tpl->compile_dir   = COMP_DIR.M_NAME.'/';
+        $tpl->cache_dir     = CACHE_DIR.M_NAME.'/';
         if(C('TMPL_ENGINE_CONFIG')) {
             $config = C('TMPL_ENGINE_CONFIG');
             foreach($config as $key=>$val) {
