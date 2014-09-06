@@ -85,7 +85,7 @@ return array(
     'DB_SQL_BUILD_LENGTH'   =>  20,                         // SQL缓存的队列长度
     'DB_SQL_LOG'            =>  true,                       // SQL执行日志记录
     'DB_BIND_PARAM'         =>  false,                      // 数据库写入数据自动参数绑定
-    'DB_FIELDS_CACHE'       =>  true,                       // 启用字段缓存
+    'DB_FIELDS_CACHE'       =>  false,                      // 启用字段缓存
     'DB_FIELD_VERSION'      => '1.0.0',                     // 数据缓存版本号
     /*****************************************日志配置********************************************/
     'LOG_RECORD'                => true,                    // 默认记录日志
