@@ -419,22 +419,17 @@ function U($url='',$vars='',$suffix=true) {
     // URL组装
     $depr = C('URL_PATHINFO_DEPR');
     if($url) {
-        if(0=== strpos($url,'/')) {// 定义路由
+        if('/' != $depr) $url = str_replace('/',$depr,$url);
+        if(0=== strpos($url,'/')) {
             $route      =   true;
             $url        =   substr($url,1);
-            if('/' != $depr) {
-                $url    =   str_replace('/',$depr,$url);
-            }
         }else{
-            if('/' != $depr) { // 安全替换
-                $url    =   str_replace('/',$depr,$url);
-            }
             // 解析分组、模块和操作
             $url        =   trim($url,$depr);
             $path       =   explode($depr,$url);
             $var        =   array();
             $var[C('VAR_ACTION')]       =   !empty($path) ? array_pop($path) : A_NAME;
-            $var[C('VAR_CONTROLLER')]   =   !empty($path) ? array_pop($path) : M_NAME;
+            $var[C('VAR_CONTROLLER')]   =   !empty($path) ? array_pop($path) : C_NAME;
             if(!empty($path)) {
                 $group                  =   array_pop($path);
                 $var[C('VAR_MODULE')]    =   $group;
@@ -795,6 +790,7 @@ function import($class, $baseUrl='', $ext ='.php') {
     }
     $baseUrl    = rtrim($baseUrl, '/').'/';
     $classFile  = $baseUrl . $class . $ext ;
+    P($classFile);
     if( isset($_file[$classFile]) ) return;
     $_file[$classFile] = true ;
     return require_cache($classFile);
@@ -1081,18 +1077,5 @@ function array_sort($arr,$keys,$type='asc'){
 function debug($obj){
     if(C('SHOW_PAGE_TRACE')){
         kernel::trace($obj);
-    }
-    if(C('FIRE_BUG_ON')){
-        fb($obj);
-    }
-}
-
-function fb(){
-    if(C('FIRE_BUG_ON')){
-        $instance = firephp::getInstance(true);
-        $args = func_get_args();
-        return call_user_func_array(array($instance,'fb'),$args);
-    }else{
-        return true;
     }
 }
