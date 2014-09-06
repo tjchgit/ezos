@@ -64,6 +64,7 @@ class kernel {
         if(file_exists($hook)) C('hooks', include $hook);
         $conf   = CONF_DIR.'config.php';
         if(file_exists($conf)) C( include $conf );
+        vendor('firephp.fb');
     }
 
     /**
