@@ -1,11 +1,19 @@
 <?php
+
+// 记录开始时间
 $GLOBALS['_begintime'] = microtime(true);
+
+// 记录内存使用状态
+define('MEMORY_LIMIT_ON',function_exists('memory_get_usage'));
+if(MEMORY_LIMIT_ON) $GLOBALS['_startUseMems'] = memory_get_usage();
+
+// URL模式常量定义
 const URL_COMMON        =   0;  //普通模式
 const URL_PATHINFO      =   1;  //PATHINFO模式
 const URL_REWRITE       =   2;  //REWRITE模式
 const URL_COMPAT        =   3;  // 兼容模式
 
-defined('ROOT_DIR')     or define('ROOT_DIR', str_replace('\\', '/', substr(dirname(__FILE__), 0, -9)));
+// 运行模式定义
 define('IS_CGI',substr(PHP_SAPI, 0,3)=='cgi' ? 1 : 0 );
 define('IS_WIN',strstr(PHP_OS, 'WIN') ? 1 : 0 );
 define('IS_CLI',PHP_SAPI=='cli' ? 1   :   0);
@@ -23,6 +31,9 @@ if(!IS_CLI) {
         define('ROOT_PATH',  ( ($_root=='/' || $_root=='\\') ? '' : $_root ).'/');
     }
 }
+
+// 目录定义
+defined('ROOT_DIR')     or define('ROOT_DIR', str_replace('\\', '/', substr(dirname(__FILE__), 0, -9)));
 defined('APP_DEBUG')    or define('APP_DEBUG',  false);
 defined('APP_DIR')      or define('APP_DIR',    ROOT_DIR.'apps/');
 defined('APP_PATH')     or define('APP_PATH',   ROOT_PATH.'apps/');
@@ -47,12 +58,21 @@ defined('VENDOR_DIR')   or define('VENDOR_DIR', LIB_DIR.'vendor/');
 
 class kernel {
     static public function boot() {
+        # 注册类自动加载方法
         spl_autoload_register('kernel::autoload');
+        # 错误调试相关信息
         register_shutdown_function('kernel::fatalError');
         set_error_handler('kernel::appError');
         set_exception_handler('kernel::appException');
+        # 开始启动加载必须的文件
         self::buildApp();
+        # 记录开始时间
         G("loadTime");
+        # 文件储存方式
+        storage::connect("file");
+        # 加载火狐调试类库
+        vendor('firephp.fb');
+        # 开始运行
         app::run();
     }
 
@@ -64,7 +84,6 @@ class kernel {
         if(file_exists($hook)) C('hooks', include $hook);
         $conf   = CONF_DIR.'config.php';
         if(file_exists($conf)) C( include $conf );
-        vendor('firephp.fb');
     }
 
     /**
