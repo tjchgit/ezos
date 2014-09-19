@@ -170,6 +170,7 @@ function F($name, $value='', $path=DATA_DIR) {
  * // ... 区间运行代码
  * G('end'); // 记录结束标签位
  * echo G('begin','end',6); // 统计区间运行时间 精确到小数后6位
+ * echo G('begin','end','m'); // 统计区间内存使用情况
  * </code>
  * @param string $start 开始标签
  * @param string $end 结束标签
@@ -177,12 +178,18 @@ function F($name, $value='', $path=DATA_DIR) {
  * @return mixed
  */
 function G($start, $end='', $dec=4) {
-    static $_info       =   array();
+    static $_info       = array();
+    static $_mem        = array();
     if(is_float($end)) { // 记录时间
-        $_info[$start]  =   $end;
+        $_info[$start]  = $end;
     }elseif(!empty($end)){ // 统计时间和内存使用
-        if(!isset($_info[$end])) $_info[$end]       =  microtime(TRUE);
-        return number_format(($_info[$end]-$_info[$start]),$dec);
+        if(!isset($_info[$end])) $_info[$end]       = microtime(TRUE);
+        if(MEMORY_LIMIT_ON && $dec=='m'){
+            if(!isset($_mem[$end])) $_mem[$end]     = memory_get_usage();
+            return number_format(($_mem[$end]-$_mem[$start])/1024);
+        }else{
+            return number_format(($_info[$end]-$_info[$start]),$dec);
+        }
     }else{ // 记录时间和内存使用
         $_info[$start]  =  microtime(TRUE);
     }
@@ -477,7 +484,7 @@ function U($url='',$vars='',$suffix=true) {
  * 渲染输出Widget
  * @param string $name Widget名称
  * @param array $data 传入的参数
- * @param boolean $return 是否返回内容 
+ * @param boolean $return 是否返回内容
  * @param string $path Widget所在路径
  * @return void
  */
@@ -790,7 +797,6 @@ function import($class, $baseUrl='', $ext ='.php') {
     }
     $baseUrl    = rtrim($baseUrl, '/').'/';
     $classFile  = $baseUrl . $class . $ext ;
-    P($classFile);
     if( isset($_file[$classFile]) ) return;
     $_file[$classFile] = true ;
     return require_cache($classFile);
@@ -1078,4 +1084,29 @@ function debug($obj){
     if(C('SHOW_PAGE_TRACE')){
         kernel::trace($obj);
     }
+}
+
+function regex($type, $str){
+    $arr = array(
+        'phone'     => "/^(0|86|17951)?(13[0-9]|15[012356789]|1[78][0-9]|14[57])[0-9]{8}$/",
+        'number'    => "/^[0-9]+$/",
+        'year'      => "/^(\d{4})$/",
+        'month'     => "/^0?([1-9])$|^(1[0-2])$/",
+        'date'      => "/^(\d{4})-(0?\d{1}|1[0-2])-(0?\d{1}|[12]\d{1}|3[01])$/",
+        'datatime'  => "/^(\d{4})-(0?\d{1}|1[0-2])-(0?\d{1}|[12]\d{1}|3[01])\s(0\d{1}|1\d{1}|2[0-3]):[0-5]\d{1}:([0-5]\d{1})$/",
+        'email'     => "/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/",
+        'postcode'  => "/[1-9]\d{5}(?!\d)/",
+        'photo'     => "/\b(([\w-]+:\/\/?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/)))/",
+        'url'       => "/\b(([\w-]+:\/\/?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/)))/",
+        'http'      => "/\b(([\w-]+:\/\/?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/)))/",
+        'identity'  => "/(^\d{15}$)|(^\d{17}([0-9]|X)$)/",
+        'ipv4'      => "/^(((\d{1,2})|(1\d{2})|(2[0-4]\d)|(25[0-5]))\.){3}((\d{1,2})|(1\d{2})|(2[0-4]\d)|(25[0-5]))$/",
+        'ipv6'      => "/^([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}$/"
+    );
+
+    if(isset($arr[$type])){
+        $reg = $arr[$type];
+        return preg_match($reg, $str);
+    }
+    return false;
 }
