@@ -114,7 +114,7 @@ class view {
         }elseif(false === strpos($template, '/')){
             $template = C_NAME . $depr . $template;
         }
-        return THEME_DIR.$template.C('TMPL_TEMPL_SUFFIX');
+        return THEME_DIR.$template.C('TMPL_TEMPLATE_SUFFIX');
     }
 
     /**
@@ -132,22 +132,7 @@ class view {
         if($this->theme) {                  // 指定模板主题
             $theme = $this->theme;
         }else{
-
-            $theme =  C('DEFAULT_THEME');   // 获取模板主题名称
-            if(C('TMPL_DETECT_THEME')) {    // 自动侦测模板主题
-                $t = C('VAR_TEMPLATE');
-                if (isset($_GET[$t])){
-                    $theme = $_GET[$t];
-                }elseif(cookie('cent_themes')){
-                    $theme = cookie('cent_themes');
-                }
-                if( !in_array($theme, C('THEME_LIST')) ){
-                    $theme =  C('DEFAULT_THEME');
-                }
-                cookie('cent_themes', $theme, 864000);
-            }
+            return _getThemes();
         }
-        define('T_NAME',   $theme);                  // 当前模板主题名称
-        return $theme ? $theme.'/' : '';
     }
 }
