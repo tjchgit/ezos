@@ -1,17 +1,10 @@
 <?php
 class base_hok_token extends hook {
-    // 行为参数定义
-    protected $options   =  array(
-        'TOKEN_ON'       => true,           // 开启令牌验证
-        'TOKEN_NAME'     => '__token__',    // 令牌验证的表单隐藏字段名称
-        'TOKEN_TYPE'     => 'md5',          // 令牌验证哈希规则
-        'TOKEN_RESET'    => true,           // 令牌错误后是否重置
-    );
 
     public function run(&$content){
         if(C('TOKEN_ON')) {
-            if(strpos($content,'{__TOKEN__}')) {                            // 指定表单令牌隐藏域位置
-                $content = str_replace('{__TOKEN__}',$this->buildToken(),$content);
+            if(strpos($content,'#__TOKEN__#')) {                            // 指定表单令牌隐藏域位置
+                $content = str_replace('#__TOKEN__#',$this->buildToken(),$content);
             }elseif(preg_match('/<\/form(\s*)>/is',$content,$match)) {      // 智能生成表单令牌隐藏域
                 $content = str_replace($match[0],$this->buildToken().$match[0],$content);
             }
