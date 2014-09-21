@@ -389,6 +389,54 @@ function P($var, $echo=true, $label=null, $strict=true) {
 }
 
 /**
+ * 获取模版文件 格式 模块@主题/控制器/操作
+ * @param string $name 模版资源地址
+ * @param string $layer 视图层（目录）名称
+ * @return string
+ */
+function T($template='',$layer=''){
+    $fix        = C('TMPL_TEMPLATE_SUFFIX');
+    $view       = C('DEFAULT_VIEW_LAYER');
+    if(substr($template, 0, 2) == './'){
+        $theme = _getThemes('', false);
+        return M_DIR.$view.'/'.$theme.substr($template, 2).$fix;
+    }
+    $template = str_replace(':', '/', $template);
+    if(strpos($template, '@')){
+        list($module, $template) = explode('@', $template);
+    }else{
+        $module = M_NAME;
+    }
+    if(strpos($template, '/')) $info = explode('/', $template);
+    $layer = $layer ? $layer : $view;
+    $action = empty($info) ? A_NAME : array_pop($info);
+    $controller = empty($info) ? C_NAME : array_pop($info);
+    $theme  = _getThemes(array_pop($info), false);
+    $baseUrl    = APP_DIR.$module.'/'.$layer.'/';
+    $depr       = C('TMPL_FILE_DEPR');
+    return $baseUrl.$theme.$controller.$depr.$action.$fix;
+}
+
+function _getThemes($theme = '', $cookie=true){
+    if($theme == ''){
+        $theme =  C('DEFAULT_THEME');
+        $t = C('VAR_TEMPLATE');
+        if (isset($_GET[$t])){
+            $theme = $_GET[$t];
+        }elseif(cookie('cent_themes')){
+            $theme = cookie('cent_themes');
+        }
+    }
+    if( !in_array($theme, C('THEME_LIST')) ){
+        $theme =  C('DEFAULT_THEME');
+    }
+    if($cookie){
+        cookie('cent_themes', $theme, 864000);
+    }
+    return $theme ? $theme.'/' : '';
+}
+
+/**
  * URL组装 支持不同URL模式
  * @param string $url URL表达式，格式：'[分组/模块/操作#锚点@域名]?参数1=值1&参数2=值2...'
  * @param string|array $vars 传入的参数，支持数组和字符串
