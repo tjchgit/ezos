@@ -1181,6 +1181,7 @@ class model {
         if(!empty($this->name) && $this->autoCheckFields)    $this->_checkTableInfo();
         return $this;
     }
+
     // 数据库切换后回调方法
     protected function _after_db() {}
 
@@ -1192,7 +1193,8 @@ class model {
     public function getModelName() {
         if(empty($this->name)){
             $names = explode('_mdl_', (get_class($this)));
-            $this->name =   $names[1];
+            $name = strtolower(trim(preg_replace("/[A-Z]/", "_\\0", $names[1]), "_"));
+            $this->name =   $name;
         }
         return $this->name;
     }
@@ -1389,8 +1391,9 @@ class model {
      * @return Model
      */
     public function cache($key=true,$expire=null,$type=''){
-        if(false !== $key)
+        if(false !== $key){
             $this->options['cache']  =  array('key'=>$key,'expire'=>$expire,'type'=>$type);
+        }
         return $this;
     }
 
