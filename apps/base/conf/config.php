@@ -24,21 +24,31 @@ return array(
     'DEFAULT_HOOKS_LAYER'       => 'hooks',
     'DEFAULT_WIDGET_LAYER'      => 'widget',
     /*****************************************模版配置********************************************/
-    'THEME_LIST'                => array(),                 // 主题目录
+    'TAGLIB_BEGIN'              => '<',                     // 自定义标签开始
+    'TAGLIB_END'                => '>',                     // 自定义标签结束
+    'TAGLIB_LOAD'               => true,
+    'TAGLIB_BUILD_IN'           => 'cx',                    // 模版标签库
+    'TAGLIB_PRE_LOAD'           => '',
+    'TMPL_CACHFILE_SUFFIX'      => '.php',                  // 模版编译后缀名
+    'TMPL_TEMPLATE_SUFFIX'      => '.htm',                  // 模版后缀
+    'TMPL_DENY_FUNC_LIST'       => 'echo,exit,die',         // 模版中禁用函数
+    'TMPL_DENY_PHP'             => false,                   // 禁用原生php 标签
+    'TMPL_L_DELIM'              => '{',                     // 模版开始标签
+    'TMPL_R_DELIM'              => '}',                     // 模版结束标签
+    'TMPL_VAR_IDENTIFY'         => 'array',
+    'TMPL_STRIP_SPACE'          => true,                    // 去除html空白
+    'TMPL_CACHE_ON'             => true,                    // 开启模版缓存
+    'TMPL_CACHE_PREFIX'         => 'ezos_',                 // 缓存前缀
+    'TMPL_CACHE_TIME'           => 0,
+    'TMPL_LAYOUT_ITEM'          => '{__CONTENT__}',
+
     'TMPL_FILE_DEPR'            => '_',                     // 模版间隔
-    'TMPL_TEMPL_SUFFIX'         => '.htm',                  // 模版后缀
-    'TMPL_CACHE_ON'             => false,                   // 模版缓存
-    'TMPL_DETECT_THEME'         => true,                    // 开启自动切换主题
-    'TMPL_ENGINE_TYPE'          => 'smarty',                // 默认模版引擎
-    'TMPL_CACHE_PREFIX'         => 'ezos_',                 // 模版缓存前缀
-    'TMPL_ENGINE_CONFIG'        => array(                   // 模版配置
-        'debugging'             => false,                   // 开启调试模式
-        'left_delimiter'        =>'{',                      // 左侧边界符
-        'right_delimiter'       =>'}',                      // 右侧边界符号
-    ),
     'TMPL_CONTENT_TYPE'         => 'text/html',             // 默认输出格式
+    'THEME_LIST'                => array('blue'),           // 主题目录
     'HTTP_CACHE_CONTROL'        => 'private',               // 网页缓存控制
     'TEMP_EXCEPTION_FILE'       => BASE_DIR.'/view/exception.php',// 异常抛出模版
+    'LAYOUT_ON'                 => false,                   // 开启layout布局
+    'LAYOUT_NAME'               => 'layout',
     /*****************************************URL变量********************************************/
     'VAR_TEMPLATE'              => 't',                     // 模版切换变量
     'VAR_PATHINFO'              => 'r',                     // 兼容模式PATHINFO获取变量
@@ -118,8 +128,13 @@ return array(
         'AUTH_USER'             => 'web_user',              // 户信息表
         'AUTO_PREFIX'           => true,                    // 自动前缀
     ),
-    /*****************************************自动验证扩展********************************************/
+    /*****************************************自动验证扩展****************************************/
     'VALIDATE_EXTENDS'          => array(
         'require'               => '/.+/',
     ),
+    /*****************************************HOOKS 配置*****************************************/
+    'TOKEN_ON'                  => true,                    // 开启令牌验证
+    'TOKEN_NAME'                => '__token__',             // 令牌验证的表单隐藏字段名称
+    'TOKEN_TYPE'                => 'md5',                   // 令牌验证哈希规则
+    'TOKEN_RESET'               => true,                    // 令牌错误后是否重置
 );
