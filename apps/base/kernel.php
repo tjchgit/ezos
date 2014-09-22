@@ -77,7 +77,7 @@ class kernel {
     }
 
     static public function buildApp() {
-        include COMMON_DIR.'function.php';
+        include COMMON_DIR.'functions.php';
         C(include BASE_DIR.'conf/config.php');
         C('extends', include BASE_DIR.'conf/hooks.php');
         $hook = CONF_DIR.'hooks.php';

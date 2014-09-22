@@ -10,9 +10,7 @@ class app {
         if(is_file($confFile))      C(include $confFile);            // 加载当前分组配置
         if(is_file($hookFile))      C('self', include $hookFile);    // 加载当前分组钩子
         if(is_file($langFile))      L(include $langFile);            // 加载当前分组语言包
-        if(M_NAME != 'base'){
-            if(is_file($funcFile))      require_cache($funcFile);    // 加载当前分组函数
-        }
+        if(is_file($funcFile))      require_cache($funcFile);        // 加载当前分组函数
         define('NOW_TIME',          $_SERVER['REQUEST_TIME']);
         define('REQUEST_METHOD',    $_SERVER['REQUEST_METHOD']);
         define('IS_GET',            REQUEST_METHOD =='GET' ? true : false);
