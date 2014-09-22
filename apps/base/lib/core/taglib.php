@@ -128,8 +128,8 @@ class taglib {
             default:  // 自动判断数组或对象 只支持二维
                 $condition  =   preg_replace('/\$(\w+)\.(\w+)\s/is','(is_array($\\1)?$\\1["\\2"]:$\\1->\\2) ',$condition);
         }
-        if(false !== strpos($condition, '$Think'))
-            $condition      =   preg_replace_callback('/(\$Think.*?)\s/is', array($this, 'parseThinkVar'), $condition);
+        if(false !== strpos($condition, '$ezos'))
+            $condition      =   preg_replace_callback('/(\$ezos.*?)\s/is', array($this, 'parseThinkVar'), $condition);
         return $condition;
     }
 
@@ -140,7 +140,7 @@ class taglib {
      * @return string
      */
     public function autoBuildVar($name) {
-        if('Think.' == substr($name,0,6)){
+        if('ezos.' == substr($name,0,6)){
             // 特殊变量
             return $this->parseThinkVar($name);
         }elseif(strpos($name,'.')) {
