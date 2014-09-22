@@ -485,7 +485,7 @@ class  template {
             $varArray = explode('|',$varStr);
             //取得变量名称
             $var = array_shift($varArray);
-            if('ezos.' == substr($var,0,5)){
+            if('EZOS.' == substr($var,0,5)){
                 // 所有以Think.打头的以特殊变量对待 无需模板赋值就可以输出
                 $name = $this->parseEzosVar($var);
             }elseif( false !== strpos($var,'.')) {
@@ -570,7 +570,7 @@ class  template {
 
     /**
      * 特殊模板变量解析
-     * 格式 以 $ezos. 打头的变量属于特殊模板变量
+     * 格式 以 $EZOS. 打头的变量属于特殊模板变量
      * @access public
      * @param string $varStr  变量字符串
      * @return string
