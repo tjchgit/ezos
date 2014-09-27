@@ -76,7 +76,7 @@ class model {
         // 只在第一次执行记录
         if(empty($this->fields)) {
             // 如果数据表字段没有定义则自动获取
-            if(C('DB_FIELDS_CACHE')) {
+            if(C('DB_FIELDS_CACHE') && !APP_DEBUG) {
                 $db   =  $this->dbName?$this->dbName:C('DB_NAME');
                 $fields = F( 'fields/'.strtolower($db.'/'.$this->name) );
                 if($fields) {
@@ -117,7 +117,7 @@ class model {
         // 记录字段类型信息
         $this->fields['_type'] =  $type;
         if(C('DB_FIELD_VERSION')) $this->fields['_version'] =   C('DB_FIELD_VERSION');
-        if(C('DB_FIELDS_CACHE')){
+        if(C('DB_FIELDS_CACHE') && !APP_DEBUG){
             // 永久缓存数据表信息
             $db   =  $this->dbName ? $this->dbName : C('DB_NAME');
             F('fields/'.strtolower($db.'/'.$this->name), $this->fields);

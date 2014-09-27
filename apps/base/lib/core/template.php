@@ -112,7 +112,7 @@ class  template {
         $tmplContent =  preg_replace_callback('/<!--###literal(\d+)###-->/is', array($this, 'restoreLiteral'), $tmplContent);
         // 添加安全代码
         /*
-        $tmplContent =  '<?php if (!defined(\'THINK_PATH\')) exit();?>'.$tmplContent;
+        $tmplContent =  '<?php if (!defined(\'CENT_PATH\')) exit();?>'.$tmplContent;
         */
         // 优化生成的php代码
         $tmplContent = str_replace('?><?php','',$tmplContent);
@@ -676,7 +676,6 @@ class  template {
             if(empty($templateName)) continue;
             if(false === strpos($templateName,$this->config['template_suffix'])) {
                 // 解析规则为 模块@主题/控制器/操作
-                T('admin@blue/index/run');
                 $templateName   =   T($templateName);
             }
             // 获取模板文件内容
