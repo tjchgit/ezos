@@ -13,9 +13,16 @@ class log {
 
     // 日志信息
     static $log = array();
+    // 日志存储
+    static protected $storage   =   null;
+    // 初始化
+    static public function init($config=array()){
+        $type   = isset($config['type']) ? strtolower($config['type']) : 'file';
+        $class  = 'base_driver_log_'.$type;
+        unset($config['type']);
+        self::$storage = new $class($config);
+    }
 
-    // 日期格式
-    static $format = '[ c ]';
     /**
      * 记录日志 并且会过滤未经设置的级别
      * @static
@@ -40,11 +47,20 @@ class log {
      * @return void
      */
      static function save($logFile='', $extra='') {
+
         if(empty(self::$log)) return;
-        if(!is_dir(LOG_DIR)) mkdir(LOG_DIR, 0755, true);
-        if(empty($logFile)) $logFile = LOG_DIR.date("Y-m-d").".log";
-        $now = date(self::$format);
-        error_log($now.' '.get_client_ip().' '.$_SERVER['REQUEST_URI']."\r\n".implode('',self::$log)."\r\n", 3, $logFile,$extra);
+        // 自动文件名
+        $logFile = self::autoLogFileName($logFile);
+
+        // 初始化文件写入驱动
+        if(!self::$storage){
+            self::init();
+        }
+        // 获取错误消息
+        $message    =   implode('',self::$log);
+        // 写日志
+        self::$storage->write($message,$logFile);
+        // 清空日志缓存
         self::$log = array();
      }
 
@@ -60,8 +76,19 @@ class log {
      */
      static function write($message,$level=self::ERR, $logFile='',$extra='') {
         $now = date(self::$format);
-        if(empty($logFile)) $logFile = LOG_DIR.date('Y-m-d').'.log';
-        if(!is_dir(LOG_DIR)) mkdir(LOG_DIR, 0755, true);
-        error_log("{$now} {$level}: {$message}\r\n", 3, $logFile, $extra );
+        // 初始化驱动
+        if(!self::$storage){
+            self::init();
+        }
+        // 自动文件名
+        $logFile = self::autoLogFileName($logFile);
+        self::$storage->write("{$level}: {$message}", $logFile);
+    }
+
+    static function autoLogFileName($name){
+        if(empty($name)){
+            $name = LOG_DIR.M_NAME.'/'.date("Y-m-d").'.log';
+        }
+        return $name;
     }
 }

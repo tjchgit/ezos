@@ -47,13 +47,11 @@ defined('CORE_DIR')     or define('CORE_DIR',   LIB_DIR.'core/');
 defined('CORE_PATH')    or define('CORE_PATH',  LIB_PATH.'core/');
 defined('COMMON_DIR')   or define('COMMON_DIR', BASE_DIR.'common/');
 defined('COMMON_PATH')  or define('COMMON_PATH',BASE_PATH.'common/');
-defined('LOG_DIR')      or define('LOG_DIR',    TEMP_DIR.'log/');
+defined('LOG_DIR')      or define('LOG_DIR',    TEMP_DIR.'logs/');
 defined('DATA_DIR')     or define('DATA_DIR',   TEMP_DIR.'data/');
-defined('COMP_DIR')     or define('COMP_DIR',   TEMP_DIR.'comp/');
 defined('CACHE_DIR')    or define('CACHE_DIR',  TEMP_DIR.'cache/');
 
 // 扩展文件夹
-defined('ORG_DIR')      or define('ORG_DIR',    LIB_DIR.'org/');
 defined('VENDOR_DIR')   or define('VENDOR_DIR', LIB_DIR.'vendor/');
 
 class kernel {

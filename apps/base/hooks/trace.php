@@ -10,21 +10,61 @@ class base_hok_trace extends hook {
                 'DEBUG'     =>'调试'
         ), // 页面Trace可定制的选项卡
         'PAGE_TRACE_SAVE'   => false,
-        'SHOW_PAGE_TRACE'   => false
+        'SHOW_PAGE_TRACE'   => false,
     );
     public function run(&$param) {
         if(!IS_AJAX && C('SHOW_PAGE_TRACE')) {
-            echo $this->showTrac();
+            echo $this->showTrace();
+        }
+        if(C('PAGE_TRACE_SAVE')){
+            $this->saveTrace();
         }
     }
 
-    private function showTrac() {
+    private function showTrace() {
+        $trace  = $this->getTrace();
+        // 调用trace页面模板
+        ob_start();
+        include  BASE_DIR.'/view/trace.php' ;
+        $res = ob_get_clean();
+        return $res;
+    }
+    // 保存Trace信息
+    private function saveTrace(){
+        $trace  = $this->getTrace();
+        $array  =   C('TRACE_PAGE_TABS');
+        foreach(C('TRACE_PAGE_TABS') as $key=>$val){
+            $array[] = $val;
+        }
+        $content    =   date('[ c ]').' '.get_client_ip().' '.$_SERVER['REQUEST_URI']."\r\n";
+        foreach ($trace as $key=>$val){
+            if(!isset($array) || in_array($key,$array)) {
+                $content    .=  '[ '.$key." ]＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\r\n";
+                if(is_array($val)) {
+                    foreach ($val as $k=>$v){
+                        $content .= (!is_numeric($k)?$k.':':'').print_r($v,true)."\r\n";
+                    }
+                }else{
+                    $content .= print_r($val,true)."\r\n";
+                }
+                $content .= "\r\n";
+            }
+        }
+        $dirName= LOG_DIR.'_trace/';
+        if(!is_dir($dirName)){
+            mkdir($dirName,0755,true);
+        }
+        error_log( str_replace('<br/>', "\r\n",$content), 3,  $dirName.date('Y-m-d') .'.log' );
+    }
+
+    // trace信息
+    private function getTrace(){
         // 获取基本信息
-        $trac   = array();
+        $trace  = array();
         $base   = array(
             '请求信息'  =>  date('Y-m-d H:i:s',$_SERVER['REQUEST_TIME']).' '.$_SERVER['SERVER_PROTOCOL'].' '.$_SERVER['REQUEST_METHOD'].' : '.__URL__,
             '运行时间'  =>  $this->showTime(),
-			'吞&nbsp&nbsp吐&nbsp&nbsp率'	=>	number_format(1/G('beginTime','viewEndTime'),2).'req/s',
+            '吞&nbsp&nbsp吐&nbsp&nbsp率'   =>  number_format(1/G('beginTime','viewEndTime'),2).'req/s',
             '内存开销'  =>  MEMORY_LIMIT_ON?number_format((memory_get_usage() - $GLOBALS['_startUseMems'])/1024,2).' kb':'不支持',
             '查询信息'  =>  N('db_query').' queries '.N('db_write').' writes ',
             '文件加载'  =>  count(get_included_files()),
@@ -67,39 +107,7 @@ class base_hok_trace extends hook {
                     }
             }
         }
-
-        // 如果开启保存trace结果
-        if($save = C('PAGE_TRACE_SAVE')) {              // 保存页面trace日志
-            if(is_array($save)) {                       // 选择选项卡保存
-                $tabs   =   C('TRACE_PAGE_TABS');
-                $array  =   array();
-                foreach ($save as $tab){
-                    $array[] =   $tabs[$tab];
-                }
-            }
-            $content    =   date('[ c ]').' '.get_client_ip().' '.$_SERVER['REQUEST_URI']."\r\n";
-            foreach ($trace as $key=>$val){
-                if(!isset($array) || in_array($key,$array)) {
-                    $content    .=  '[ '.$key." ]\r\n";
-                    if(is_array($val)) {
-                        foreach ($val as $k=>$v){
-                            $content .= (!is_numeric($k)?$k.':':'').print_r($v,true)."\r\n";
-                        }
-                    }else{
-                        $content .= print_r($val,true)."\r\n";
-                    }
-                    $content .= "\r\n";
-                }
-            }
-            error_log( str_replace('<br/>', "\r\n",$content), 3,  LOG_DIR.date('Y_m_d') .'.trace.log' );
-        }
-        unset($files, $info, $base);
-
-        // 调用trace页面模板
-        ob_start();
-        include  BASE_DIR.'/view/trace.php' ;
-        $res = ob_get_clean();
-        return $res;
+        return $trace;
     }
 
     // 获取运行时间

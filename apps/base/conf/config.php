@@ -95,7 +95,7 @@ return array(
     'DB_SQL_BUILD_LENGTH'   =>  20,                         // SQL缓存的队列长度
     'DB_SQL_LOG'            =>  true,                       // SQL执行日志记录
     'DB_BIND_PARAM'         =>  false,                      // 数据库写入数据自动参数绑定
-    'DB_FIELDS_CACHE'       =>  false,                      // 启用字段缓存
+    'DB_FIELDS_CACHE'       =>  true,                       // 启用字段缓存
     'DB_FIELD_VERSION'      => '1.0.0',                     // 数据缓存版本号
     /*****************************************日志配置********************************************/
     'LOG_RECORD'                => true,                    // 默认记录日志
@@ -103,7 +103,7 @@ return array(
     'LOG_LEVEL'                 => 'EMERG,ALERT,CRIT,ERR',  // 允许记录的日志级别、
     /*****************************************缓存配置********************************************/
     'DATA_CACHE_TYPE'           => 'file',                  // 缓存储存方式
-    'DATA_CACHE_PATH'           => CACHE_DIR,               // 缓存目录
+    'DATA_CACHE_PATH'           => DATA_DIR.'cache/',       // 缓存目录
     'DATA_CACHE_PREFIX'         => '',                      // 缓存前缀
     'DATA_CACHE_TIME'           => 60*60*24,                // 缓存24小时
     'DATA_CACHE_TABLE'          => 'wx_cache',              // 缓存数据库表名
