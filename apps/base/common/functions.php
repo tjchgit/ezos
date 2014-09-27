@@ -839,8 +839,6 @@ function import($class, $baseUrl='', $ext ='.php') {
             $baseUrl = APP_DIR.M_NAME.'/';
             unset($class_strut[0]);
             $class = implode('/', $class_strut);
-        }elseif(in_array($class_strut[0], array('net', 'crypt', 'util'))) {
-            $baseUrl = ORG_DIR;
         }
     }
     $baseUrl    = rtrim($baseUrl, '/').'/';
