@@ -117,6 +117,10 @@ class base_driver_cache_file extends cache {
         }else {
             $check  =  '';
         }
+        $dirName = dirname($filename);
+        if(!is_dir($dirName)){
+            mkdir($dirName, 0755, true);
+        }
         $data    = "<?php\n//".sprintf('%012d',$expire).$check.$data."\n?>";
         $result  =   file_put_contents($filename,$data);
         if($result) {

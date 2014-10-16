@@ -1192,8 +1192,11 @@ class model {
      */
     public function getModelName() {
         if(empty($this->name)){
+            $name = '';
             $names = explode('_mdl_', (get_class($this)));
-            $name = strtolower(trim(preg_replace("/[A-Z]/", "_\\0", $names[1]), "_"));
+            if(is_array($names) && isset($names[1])){
+                $name = strtolower(trim(preg_replace("/[A-Z]/", "_\\0", $names[1]), "_"));
+            }
             $this->name =   $name;
         }
         return $this->name;
