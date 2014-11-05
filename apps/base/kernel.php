@@ -68,8 +68,6 @@ class kernel {
         G("loadTime");
         # 文件储存方式
         storage::connect("file");
-        # 加载火狐调试类库
-        vendor('firephp.fb');
         # 开始运行
         app::run();
     }

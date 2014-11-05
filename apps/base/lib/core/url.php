@@ -132,7 +132,7 @@ class url {
                 if($_route[$oldUrl] !== $url){
                     $_route[$oldUrl] = trim($url, '/');
                     return $_route[$oldUrl];
-                }   
+                }
             }else{                              // 正则路由
                 $regGroup = array();
                 preg_match_all("@\(.*?\)@i", $k, $regGroup, PREG_PATTERN_ORDER);
