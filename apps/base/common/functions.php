@@ -92,40 +92,6 @@ function E($msg, $code=0) {
 }
 
 /**
- * 缓存管理
- * @param mixed $name 缓存名称，如果为数组表示进行缓存设置
- * @param mixed $value 缓存值
- * @param mixed $options 缓存参数
- * @return mixed
- */
-function S($name, $value='', $options=null) {
-    static $cache = '';
-    if( is_array($options) && empty($cache) ) {
-        // 缓存操作 同时初始化
-        $type = isset($options['type']) ? $options['type'] : '';
-        $cache = cache::getInstance($type, $options);
-    }elseif(is_array($name)) {
-        $type   = isset($name['type']) ? $name['type'] : '';
-        $cache  = cache::getInstance($type, $name);
-    }elseif(empty($cache)) {
-        $cache  = cache::getInstance();
-    }
-
-    if('' === $value) {
-        return $cache->get($name);
-    }elseif(is_null($value)) {
-        return $cache->rm($name);
-    }else{
-        if(is_array($options)) {
-            $expire = isset($options['expire']) ? $options['expire'] : null;
-        }else{
-            $expire = is_numeric($options) ? $options : null;
-        }
-        return $cache->set($name, $value, $expire);
-    }
-}
-
-/**
  * 快速文件数据读取和保存 针对简单类型数据 字符串、数组
  * @param string $name 缓存名称
  * @param mixed $value 缓存值
@@ -304,8 +270,11 @@ function I($name,$default='',$filter=null) {
 }
 
 /**
- *
- **/
+ * 获取和设置语言定义(不区分大小写)
+ * @param string|array $name 语言变量
+ * @param mixed $value 语言值或者变量
+ * @return mixed
+ */
 function L($name=null, $value=null){
     static $_lang = array();
     if (empty($name)) return $_lang;
@@ -412,6 +381,40 @@ function P($var, $echo=true, $label=null, $strict=true) {
         return null;
     }else{
         return $output;
+    }
+}
+
+/**
+ * 缓存管理
+ * @param mixed $name 缓存名称，如果为数组表示进行缓存设置
+ * @param mixed $value 缓存值
+ * @param mixed $options 缓存参数
+ * @return mixed
+ */
+function S($name, $value='', $options=null) {
+    static $cache = '';
+    if( is_array($options) && empty($cache) ) {
+        // 缓存操作 同时初始化
+        $type = isset($options['type']) ? $options['type'] : '';
+        $cache = cache::getInstance($type, $options);
+    }elseif(is_array($name)) {
+        $type   = isset($name['type']) ? $name['type'] : '';
+        $cache  = cache::getInstance($type, $name);
+    }elseif(empty($cache)) {
+        $cache  = cache::getInstance();
+    }
+
+    if('' === $value) {
+        return $cache->get($name);
+    }elseif(is_null($value)) {
+        return $cache->rm($name);
+    }else{
+        if(is_array($options)) {
+            $expire = isset($options['expire']) ? $options['expire'] : null;
+        }else{
+            $expire = is_numeric($options) ? $options : null;
+        }
+        return $cache->set($name, $value, $expire);
     }
 }
 
@@ -523,6 +526,36 @@ function U($url='',$vars='',$suffix=true) {
         }
     }
 
+    // 独立域名部署
+    if(C('SUB_DOMAIN_DEPLOY')){
+        $rules  = C('SUB_DOMAIN_RULES');
+        $rule   = "";
+        if(isset($rules[$_SERVER['HTTP_HOST']])){
+            $rule = $rules[$_SERVER['HTTP_HOST']];
+        }else{
+            $subDomain  = strtolower(substr($_SERVER['HTTP_HOST'],0,strpos($_SERVER['HTTP_HOST'],'.')));
+            if($subDomain && isset($rules[$subDomain])) {
+                $rule =  $rules[$subDomain];
+            }
+        }
+        if(!empty($rule)){
+            $array  = explode('/',$rule);
+            debug($array);
+            debug($array);
+            if($var['m'] == array_shift($array)){
+                unset($var['m']);
+            }
+            if(!empty($array) && $var['c'] == array_shift($array)){
+                unset($var['c']);
+            }
+            if(!empty($array) && $var['a'] == array_shift($array)){
+                unset($var['a']);
+            }
+        }
+    }
+
+    //debug($var);
+
     if($urlModel == URL_COMMON) { // 普通模式URL转换
         $url        =   http_build_query(array_reverse($var));
         if(!empty($vars)) {
@@ -542,15 +575,16 @@ function U($url='',$vars='',$suffix=true) {
         }
     }
     $domain = preg_replace('/\w+?\.php(\/|\?)?/i', '', __WEB__);
+    $suffix = ($suffix===true) ? '.'.ltrim(C('URL_HTML_SUFFIX'), '.') : '' ;
+
     if($urlModel == URL_PATHINFO){
         $url = __WEB__.'/'.$url;
     }elseif($urlModel == URL_REWRITE){
-        $url = $domain.url::tourl($url);
+        $tUrl = url::tourl($url);
+        $url = ($tUrl) ? $domain.$tUrl.$suffix : $domain;
     }elseif($urlModel == URL_COMPAT){
         $url = __WEB__.'?'.C('VAR_PATHINFO').'='.$url;
     }
-    $suffix = $suffix===true ? '.'.ltrim(C('URL_HTML_SUFFIX'), '.') : '' ;
-    if($url) $url .= $suffix;
     if(isset($anchor)) $url .= '#'.$anchor;
     return $url;
 }
@@ -1154,7 +1188,9 @@ function array_sort($arr,$keys,$type='asc'){
  * @param obj 要输出的对象
  **/
 function debug($obj){
-    if(C('SHOW_PAGE_TRACE')){
+    vendor('FirePHP.fb');
+    fb($obj);
+    if(APP_DEBUG && C('SHOW_PAGE_TRACE')){
         kernel::trace($obj);
     }
 }
