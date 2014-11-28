@@ -540,8 +540,6 @@ function U($url='',$vars='',$suffix=true) {
         }
         if(!empty($rule)){
             $array  = explode('/',$rule);
-            debug($array);
-            debug($array);
             if($var['m'] == array_shift($array)){
                 unset($var['m']);
             }

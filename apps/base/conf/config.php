@@ -37,18 +37,17 @@ return array(
     'TMPL_R_DELIM'              => '}',                     // 模版结束标签
     'TMPL_VAR_IDENTIFY'         => 'array',
     'TMPL_STRIP_SPACE'          => true,                    // 去除html空白
-    'TMPL_CACHE_ON'             => true,                    // 开启模版缓存
+    'TMPL_CACHE_ON'             => false,                    // 开启模版缓存
     'TMPL_CACHE_PREFIX'         => 'ezos_',                 // 缓存前缀
-    'TMPL_CACHE_TIME'           => 0,
-    'TMPL_LAYOUT_ITEM'          => '{__CONTENT__}',
+    'TMPL_CACHE_TIME'           => 0,                       // 缓存时间
 
     'TMPL_FILE_DEPR'            => '_',                     // 模版间隔
     'TMPL_CONTENT_TYPE'         => 'text/html',             // 默认输出格式
     'THEME_LIST'                => array('blue'),           // 主题目录
     'HTTP_CACHE_CONTROL'        => 'private',               // 网页缓存控制
     'TEMP_EXCEPTION_FILE'       => BASE_DIR.'/view/exception.php',// 异常抛出模版
-    'LAYOUT_ON'                 => false,                   // 开启layout布局
-    'LAYOUT_NAME'               => 'layout',
+    'LAYOUT_DIR_NAME'           => 'layout',
+    'LAYOUT_ITEM_STR'          => '{__CONTENT__}',          // 默认占位符
     /*****************************************URL变量********************************************/
     'VAR_TEMPLATE'              => 't',                     // 模版切换变量
     'VAR_PATHINFO'              => 'r',                     // 兼容模式PATHINFO获取变量
