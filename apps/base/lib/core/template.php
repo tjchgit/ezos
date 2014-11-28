@@ -29,7 +29,7 @@ class  template {
         $this->config['tmpl_begin']         =   $this->stripPreg(C('TMPL_L_DELIM'));
         $this->config['tmpl_end']           =   $this->stripPreg(C('TMPL_R_DELIM'));
         $this->config['default_tmpl']       =   C('TEMPLATE_NAME');
-        $this->config['layout_item']        =   C('TMPL_LAYOUT_ITEM');
+        $this->config['layout_item']        =   C('LAYOUT_ITEM_STR');
     }
 
     private function stripPreg($str) {
@@ -62,7 +62,7 @@ class  template {
     public function fetch($templateFile,$templateVar,$prefix='') {
         $this->tVar         =   $templateVar;
         $templateCacheFile  =   $this->loadTemplate($templateFile,$prefix);
-        Storage::load($templateCacheFile,$this->tVar,null,'tpl');
+        storage::load($templateCacheFile, $this->tVar);
     }
 
     /**
@@ -74,6 +74,7 @@ class  template {
      * @throws ThinkExecption
      */
     public function loadTemplate ($tmplTemplateFile,$prefix='') {
+
         if(is_file($tmplTemplateFile)) {
             $this->templateFile    =  $tmplTemplateFile;
             // 读取模板文件内容
@@ -81,21 +82,13 @@ class  template {
         }else{
             $tmplContent =  $tmplTemplateFile;
         }
-         // 根据模版文件名定位缓存文件
+
+        // 根据模版文件名定位缓存文件
         $tmplCacheFile = $this->config['cache_path'].$prefix.md5($tmplTemplateFile).$this->config['cache_suffix'];
-        // 判断是否启用布局
-        if(C('LAYOUT_ON')) {
-            if(false !== strpos($tmplContent,'{__NOLAYOUT__}')) { // 可以单独定义不使用布局
-                $tmplContent = str_replace('{__NOLAYOUT__}','',$tmplContent);
-            }else{ // 替换布局的主体内容
-                $layoutFile  =  THEME_PATH.C('LAYOUT_NAME').$this->config['template_suffix'];
-                $tmplContent = str_replace($this->config['layout_item'],$tmplContent,file_get_contents($layoutFile));
-            }
-        }
 
         // 编译模板内容
         $tmplContent =  $this->compiler($tmplContent);
-        Storage::put($tmplCacheFile,trim($tmplContent),'tpl');
+        storage::put($tmplCacheFile,trim($tmplContent));
         return $tmplCacheFile;
     }
 
@@ -111,9 +104,7 @@ class  template {
         // 还原被替换的Literal标签
         $tmplContent =  preg_replace_callback('/<!--###literal(\d+)###-->/is', array($this, 'restoreLiteral'), $tmplContent);
         // 添加安全代码
-        /*
-        $tmplContent =  '<?php if (!defined(\'CENT_PATH\')) exit();?>'.$tmplContent;
-        */
+        $tmplContent =  '<?php if (!defined(\'IS_IN_EZOS\')) exit();?>'.$tmplContent;
         // 优化生成的php代码
         $tmplContent = str_replace('?><?php','',$tmplContent);
         // 模版编译过滤标签
@@ -181,7 +172,7 @@ class  template {
         }
         // PHP语法检查
         if(C('TMPL_DENY_PHP') && false !== strpos($content,'<?php')) {
-            E(L('_NOT_ALLOW_PHP_'));
+            E('禁止在模版中使用原生php代码');
         }
         return $content;
     }
@@ -191,16 +182,17 @@ class  template {
         // 读取模板中的布局标签
         $find = preg_match('/'.$this->config['taglib_begin'].'layout\s(.+?)\s*?\/'.$this->config['taglib_end'].'/is',$content,$matches);
         if($find) {
-            //替换Layout标签
+            // 替换Layout标签
             $content    =   str_replace($matches[0],'',$content);
-            //解析Layout标签
+            // 解析Layout标签
             $array      =   $this->parseXmlAttrs($matches[1]);
-            if(!C('LAYOUT_ON') || C('LAYOUT_NAME') !=$array['name'] ) {
-                // 读取布局模板
-                $layoutFile =   THEME_PATH.$array['name'].$this->config['template_suffix'];
-                $replace    =   isset($array['replace'])?$array['replace']:$this->config['layout_item'];
-                // 替换布局的主体内容
-                $content    =   str_replace($replace,$content,file_get_contents($layoutFile));
+            // 替换内容
+            $layoutFile =  THEME_DIR.C('LAYOUT_DIR_NAME').'/'.$array['name'].$this->config['template_suffix'];
+            $replace    =  isset($array['replace']) ? $array['replace'] : $this->config['layout_item'];
+            if(is_file($layoutFile)){
+                $content    =  str_replace($replace, $content, file_get_contents($layoutFile));
+            }else{
+                E("没有找到布局文件". $layoutFile);
             }
         }else{
             $content = str_replace('{__NOLAYOUT__}','',$content);
@@ -241,7 +233,8 @@ class  template {
             preg_replace_callback('/'.$begin.'block\sname=[\'"](.+?)[\'"]\s*?'.$end.'(.*?)'.$begin.'\/block'.$end.'/is', array($this, 'parseBlock'),$content);
             // 读取继承模板
             $array      =   $this->parseXmlAttrs($matches[1]);
-            $content    =   $this->parseTemplateName($array['name']);
+            $extendFile =   THEME_DIR.'block/'.$array['name'].$this->config['template_suffix'];
+            $content    =   $this->parseTemplateName($extendFile);
             $content    =   $this->parseInclude($content, false); //对继承模板中的include进行分析
             // 替换block标签
             $content = $this->replaceBlock($content);
@@ -326,6 +319,7 @@ class  template {
         $begin = $this->config['taglib_begin'];
         $end   = $this->config['taglib_end'];
         $reg   = '/('.$begin.'block\sname=[\'"](.+?)[\'"]\s*?'.$end.')(.*?)'.$begin.'\/block'.$end.'/is';
+
         if(is_string($content)){
             do{
                 $content = preg_replace_callback($reg, array($this, 'replaceBlock'), $content);
@@ -339,8 +333,8 @@ class  template {
             } else {
                 $name    = $content[2];
                 $content = $content[3];
-                $content = isset($this->block[$name]) ? $this->block[$name] : $content;
-                return $content;
+                return $this->block[$name];
+                return isset($this->block[$name]) ? $this->block[$name] : $content;
             }
         }
     }
@@ -667,9 +661,10 @@ class  template {
      * @return string
      */
     private function parseTemplateName($templateName){
-        if(substr($templateName,0,1)=='$')
+        if(substr($templateName,0,1)=='$'){
             //支持加载变量文件名
             $templateName = $this->get(substr($templateName,1));
+        }
         $array  =   explode(',',$templateName);
         $parseStr   =   '';
         foreach ($array as $templateName){
