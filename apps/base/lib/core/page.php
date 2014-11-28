@@ -66,7 +66,6 @@ class page{
         /* 生成URL */
         $this->parameter[$this->p] = '0';
         $this->url = U(A_NAME, $this->parameter);
-        fb($this->url);
 
         /* 计算分页信息 */
         $this->totalPages = ceil($this->totalRows / $this->listRows);           //总页数

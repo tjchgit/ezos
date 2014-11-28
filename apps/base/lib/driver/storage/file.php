@@ -26,11 +26,12 @@ class base_driver_storage_file extends storage{
      * @param string $content  文件内容
      * @return boolean
      */
-    public function put($filename,$content,$type=''){
+    public function put($filename, $content, $type=''){
+        $type = ($type != '') ? '.'.rtrim($type,'.') : '' ;
         $dir         =  dirname($filename);
         if(!is_dir($dir)) mkdir($dir,0755,true);
-        if(false === file_put_contents($filename,$content)){
-            E('文件写入失败:'.$filename);
+        if(false === file_put_contents($filename.$type,$content)){
+            E('文件写入失败:'.$filename.$type);
         }else{
             $this->contents[$filename]=$content;
             return true;
