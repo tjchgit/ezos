@@ -1,5 +1,5 @@
 <?php
-
+define("IS_IN_EZOS", true);
 // 记录开始时间
 $GLOBALS['_begintime'] = microtime(true);
 
