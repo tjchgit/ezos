@@ -79,6 +79,7 @@ class app {
         self::init();
 
         hook('app_begin');
+        header("Content-type: text/html; charset=".C('DEFAULT_CHARSET'));
         session(C('SESSION_OPTION'));
 
         G('initTime');

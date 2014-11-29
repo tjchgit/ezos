@@ -1,5 +1,9 @@
 <?php
 define("IS_IN_EZOS", true);
+// 检测PHP环境
+if(version_compare(PHP_VERSION,'5.3.0','<')){
+    die('您的PHP版本过低，请使用5.3.0以上版本');
+}
 // 记录开始时间
 $GLOBALS['_begintime'] = microtime(true);
 
