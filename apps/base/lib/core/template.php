@@ -128,14 +128,16 @@ class  template {
         // 首先替换literal标签内容
         $content    =   preg_replace_callback('/'.$begin.'literal'.$end.'(.*?)'.$begin.'\/literal'.$end.'/is', array($this, 'parseLiteral'),$content);
         // 内置标签库
-        if(is_array(C('TAGLIB_BUILD'))){
-            foreach ( C('TAGLIB_BUILD') as $tag){
+        $systemTagLib = C("TAGLIB_BUILD");
+        if(is_array($systemTagLib) && !empty($systemTagLib)){
+            foreach ( $systemTagLib as $tag){
                 $this->parseTagLib($tag,$content,true);
             }
         }
         // 扩展标签库
-        if(is_array(C('TAGLIB_EXTEND')) && !empty(C('TAGLIB_EXTEND'))){
-            foreach( C('TAGLIB_EXTEND') as $tag){
+        $extendsTagLib = C('TAGLIB_EXTEND');
+        if(is_array($extendsTagLib) && !empty($extendsTagLib)){
+            foreach( $extendsTagLib as $tag){
                 $this->parseTagLib($tag, $content);
             }
         }

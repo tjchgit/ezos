@@ -123,13 +123,11 @@ class kernel {
             }elseif(file_exists(APP_DIR.$fileName)) {
                 require_cache(APP_DIR.$fileName);
             }else{
-                self::halt("未找到类:{$class_name}定义文件");
-                exit;
+                return false;
             }
         }elseif(file_exists(CORE_DIR.$className.'.php')) {
             require_cache(CORE_DIR.$className.'.php');
         }else{
-            self::halt("未找到类:{$class_name}定义文件");
             return false;
         }
     }
