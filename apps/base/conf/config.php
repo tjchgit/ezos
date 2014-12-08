@@ -26,13 +26,11 @@ return array(
     /*****************************************模版配置********************************************/
     'TAGLIB_BEGIN'              => '<',                     // 自定义标签开始
     'TAGLIB_END'                => '>',                     // 自定义标签结束
-    'TAGLIB_LOAD'               => true,
-    'TAGLIB_BUILD_IN'           => 'cx',                    // 模版标签库
-    'TAGLIB_PRE_LOAD'           => '',
+    'TAGLIB_BUILD'              => array('cx'),             // 模版标签库
+    'TAGLIB_EXTEND'             => array('e'),              // 模版标签库
     'TMPL_CACHFILE_SUFFIX'      => '.php',                  // 模版编译后缀名
     'TMPL_TEMPLATE_SUFFIX'      => '.htm',                  // 模版后缀
     'TMPL_DENY_FUNC_LIST'       => 'echo,exit,die',         // 模版中禁用函数
-    'TMPL_DENY_PHP'             => false,                   // 禁用原生php 标签
     'TMPL_L_DELIM'              => '{',                     // 模版开始标签
     'TMPL_R_DELIM'              => '}',                     // 模版结束标签
     'TMPL_VAR_IDENTIFY'         => 'array',

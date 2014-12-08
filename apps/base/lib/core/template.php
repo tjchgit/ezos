@@ -64,7 +64,6 @@ class  template {
         $templateCacheFile  =   $this->loadTemplate($templateFile,$prefix);
         storage::load($templateCacheFile, $this->tVar);
     }
-
     /**
      * 加载主模板并缓存
      * @access public
@@ -74,7 +73,6 @@ class  template {
      * @throws ThinkExecption
      */
     public function loadTemplate ($tmplTemplateFile,$prefix='') {
-
         if(is_file($tmplTemplateFile)) {
             $this->templateFile    =  $tmplTemplateFile;
             // 读取模板文件内容
@@ -82,7 +80,6 @@ class  template {
         }else{
             $tmplContent =  $tmplTemplateFile;
         }
-
         // 根据模版文件名定位缓存文件
         $tmplCacheFile = $this->config['cache_path'].$prefix.md5($tmplTemplateFile).$this->config['cache_suffix'];
 
@@ -130,49 +127,27 @@ class  template {
         $content    =   $this->parsePhp($content);
         // 首先替换literal标签内容
         $content    =   preg_replace_callback('/'.$begin.'literal'.$end.'(.*?)'.$begin.'\/literal'.$end.'/is', array($this, 'parseLiteral'),$content);
-
-        // 获取需要引入的标签库列表
-        // 标签库只需要定义一次，允许引入多个一次
-        // 一般放在文件的最前面
-        // 格式：<taglib name="html,mytag..." />
-        // 当TAGLIB_LOAD配置为true时才会进行检测
-        if(C('TAGLIB_LOAD')) {
-            $this->getIncludeTagLib($content);
-            if(!empty($this->tagLib)) {
-                // 对导入的TagLib进行解析
-                foreach($this->tagLib as $tagLibName) {
-                    $this->parseTagLib($tagLibName,$content);
-                }
+        // 内置标签库
+        if(is_array(C('TAGLIB_BUILD'))){
+            foreach ( C('TAGLIB_BUILD') as $tag){
+                $this->parseTagLib($tag,$content,true);
             }
         }
-        // 预先加载的标签库 无需在每个模板中使用taglib标签加载 但必须使用标签库XML前缀
-        if(C('TAGLIB_PRE_LOAD')) {
-            $tagLibs =  explode(',',C('TAGLIB_PRE_LOAD'));
-            foreach ($tagLibs as $tag){
-                $this->parseTagLib($tag,$content);
+        // 扩展标签库
+        if(is_array(C('TAGLIB_EXTEND')) && !empty(C('TAGLIB_EXTEND'))){
+            foreach( C('TAGLIB_EXTEND') as $tag){
+                $this->parseTagLib($tag, $content);
             }
         }
-        // 内置标签库 无需使用taglib标签导入就可以使用 并且不需使用标签库XML前缀
-        $tagLibs =  explode(',',C('TAGLIB_BUILD_IN'));
-
-        foreach ($tagLibs as $tag){
-            $this->parseTagLib($tag,$content,true);
-        }
-
         //解析普通模板标签 {tagName}
         $content = preg_replace_callback('/('.$this->config['tmpl_begin'].')([^\d\s'.$this->config['tmpl_begin'].$this->config['tmpl_end'].'].+?)('.$this->config['tmpl_end'].')/is', array($this, 'parseTag'),$content);
         return $content;
     }
 
-    // 检查PHP语法
+    // PHP语法
     protected function parsePhp($content) {
         if(ini_get('short_open_tag')){
-            // 开启短标签的情况要将<?标签用echo方式输出 否则无法正常输出xml标识
             $content = preg_replace('/(<\?(?!php|=|$))/i', '<?php echo \'\\1\'; ?>'."\n", $content );
-        }
-        // PHP语法检查
-        if(C('TMPL_DENY_PHP') && false !== strpos($content,'<?php')) {
-            E('禁止在模版中使用原生php代码');
         }
         return $content;
     }
@@ -188,8 +163,10 @@ class  template {
             $array      =   $this->parseXmlAttrs($matches[1]);
             // 替换内容
             $layoutFile =  THEME_DIR.C('LAYOUT_DIR_NAME').'/'.$array['name'].$this->config['template_suffix'];
-            $replace    =  isset($array['replace']) ? $array['replace'] : $this->config['layout_item'];
             if(is_file($layoutFile)){
+                $replace    = isset($array['replace'])
+                            ? $array['replace']
+                            : $this->config['layout_item'];
                 $content    =  str_replace($replace, $content, file_get_contents($layoutFile));
             }else{
                 E("没有找到布局文件". $layoutFile);
@@ -370,7 +347,7 @@ class  template {
     public function parseTagLib($tagLib,&$content,$hide=false) {
         $begin      =   $this->config['taglib_begin'];
         $end        =   $this->config['taglib_end'];
-        $className  =   'base_driver_tag_'.strtolower($tagLib);
+        $className  =   'base_driver_taglib_'.strtolower($tagLib);
         $tLib       =   kernel::instance($className);
         $that       =   $this;
         foreach ($tLib->getTags() as $name=>$val){
@@ -382,14 +359,12 @@ class  template {
             $level      =   isset($val['level'])?$val['level']:1;
             $closeTag   =   isset($val['close'])?$val['close']:true;
             foreach ($tags as $tag){
-                $parseTag = !$hide? $tagLib.':'.$tag: $tag;// 实际要解析的标签名称
+                $parseTag = !$hide? $tagLib.':'.$tag: $tag; // 实际要解析的标签名称
                 if(!method_exists($tLib,'_'.$tag)) {
-                    // 别名可以无需定义解析方法
-                    $tag  =  $name;
+                    $tag  =  $name;                         // 别名可以无需定义解析方法
                 }
                 $n1 = empty($val['attr'])?'(\s*?)':'\s([^'.$end.']*)';
                 $this->tempVar = array($tagLib, $tag);
-
                 if (!$closeTag){
                     $patterns       = '/'.$begin.$parseTag.$n1.'\/(\s*?)'.$end.'/is';
                     $content        = preg_replace_callback($patterns, function($matches) use($tLib,$tag,$that){
@@ -435,13 +410,12 @@ class  template {
      */
     public function parseTag($tagStr){
         if(is_array($tagStr)) $tagStr = $tagStr[2];
-        //if (MAGIC_QUOTES_GPC) {
-            $tagStr = stripslashes($tagStr);
-        //}
+        $tagStr = stripslashes($tagStr);
         //还原非模板标签
-        if(preg_match('/^[\s|\d]/is',$tagStr))
-            //过滤空格和数字打头的标签
+        if(preg_match('/^[\s|\d]/is',$tagStr)){     //过滤空格和数字打头的标签
             return C('TMPL_L_DELIM') . $tagStr .C('TMPL_R_DELIM');
+        }
+
         $flag   =  substr($tagStr,0,1);
         $flag2  =  substr($tagStr,1,1);
         $name   = substr($tagStr,1);
@@ -454,8 +428,7 @@ class  template {
         }elseif('~' == $flag){ // 执行某个函数
             return  '<?php '.$name.';?>';
         }elseif(substr($tagStr,0,2)=='//' || (substr($tagStr,0,2)=='/*' && substr(rtrim($tagStr),-2)=='*/')){
-            //注释标签
-            return '';
+            return '';  //注释标签
         }
         // 未识别的标签直接返回
         return C('TMPL_L_DELIM') . $tagStr .C('TMPL_R_DELIM');
@@ -480,7 +453,7 @@ class  template {
             //取得变量名称
             $var = array_shift($varArray);
             if('EZOS.' == substr($var,0,5)){
-                // 所有以Think.打头的以特殊变量对待 无需模板赋值就可以输出
+                // 所有以EZOS.打头的以特殊变量对待 无需模板赋值就可以输出
                 $name = $this->parseEzosVar($var);
             }elseif( false !== strpos($var,'.')) {
                 //支持 {$var.property}
