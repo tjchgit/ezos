@@ -120,7 +120,7 @@ class page{
                     break;
                 }
             }else{
-                if($page > 0 && $this->totalPages != 1){
+                if($page > 0){
                     $link_page .= '<span class="current">' . $page . '</span>';
                 }
             }
